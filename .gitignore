@@ -1,0 +1,8 @@
+# All files containing account information
+*.csv
+
+# Virtuan environment
+/.venv/
+
+# Python binaries
+__pycache__/
