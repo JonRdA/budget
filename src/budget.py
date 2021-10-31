@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from database import Database
+
 # DATA LOADING
 
 def load_track(fpath, n_account):
@@ -34,5 +36,3 @@ def load_track(fpath, n_account):
 
 
 a1 = load_track("../input/track_account_01.csv", 1)
-print(a1.head())
-print(a1.dtypes)
