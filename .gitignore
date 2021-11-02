@@ -6,3 +6,6 @@
 
 # Python binaries
 __pycache__/
+
+# Log files
+*.log

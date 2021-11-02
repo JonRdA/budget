@@ -1,4 +1,9 @@
+import logging
 import pandas as pd
+
+import utils
+
+logger = logging.getLogger(__name__)
 
 class Database():
     """Complete transaction database with multiple account information.
@@ -11,11 +16,15 @@ class Database():
     def __init__(self, *args, **kwargs):
         """Pandas dataframe initialization with default parameters."""
         self.db = pd.DataFrame(*args, **kwargs)
+        logger.info(f"Database {self.db.shape} created.")
+
+        if not self.db.empty:
+            utils.expand_date(self.db)
 
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db)
-        
+
     @classmethod    
     def load(cls, fpath):
         """Create database by loading .csv file.
@@ -36,6 +45,7 @@ class Database():
         # Needs to specify first as int, then as category.
         df["account"] = df["account"].astype("category")
 
+        logger.info(f"Database {df.shape} loaded.")
         return cls(df)
 
     def save(self, fpath):
@@ -44,7 +54,9 @@ class Database():
         Args:
             fpath (str): file path.
         """
-        self.db.to_csv(fpath, header=True, index=False, float_format="%.2f")
+        cols = ["date", "description", "amount", "cat", "sub"]
+        self.db.to_csv(fpath, header=True, index=False, float_format="%.2f",
+            columns=cols)
 
     def add_account(self, account):
         """Add account transactions to database.
@@ -53,6 +65,7 @@ class Database():
             account (Account): new account with transactions to be added.
 
         TODO"""
+        utils.expand_date(account)
         df = pd.concat([self.db, account], ignore_index=True)
 
         if self.db.iloc[-1, 0] >= account.iloc[0, 0]:
@@ -61,8 +74,14 @@ class Database():
             df.drop_duplicates(inplace=True)
             df.sort_values(["date", "amount"], ignore_index=True, inplace=True)
 
+        logger.info(f"Account {df.shape} added to Database {self.db.shape}.")
         self.db = df
 
 if __name__ == "__main__":
+    # If module directly run, load log configuration for all modules.
+    import logging.config
+    logging.config.fileConfig('../log/logging.conf')
+    logger = logging.getLogger('database')
+
     import budget
     budget.main()
