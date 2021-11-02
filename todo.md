@@ -2,11 +2,17 @@
 Expense tracking, classification and report automation.
 
 ## DEVELOPING
-[ ] Database, OOP inherited from pd.DataFrame? Should contain Y & M?
+[x] Change inheritance in Database.
+[ ] Start with reporting options. Temporal & cat-wise.
 
 ## IDEAS
 * How to treat special accounts? Joint ones. Should be computed specially
   when reporting. The database must only contain raw info.
+* Main database loaded for reporting. Report object adds more info: Y-M-sup.
+
+## TO IMPROVE
+* Database.add_account() -> only check coliding dates to avoid deleting any
+  duplicate that should be okay.
 
 ## LOAD, CLASSIFY & UPDATE DATABASE
 [x] Load transactions from different accounts.
@@ -26,9 +32,9 @@ Expense tracking, classification and report automation.
  [ ] Join
  
 ## DATABASE
-[ ] Sorted by date.
-[ ] Year & month columns for grouping.
-[ ] 'sup' supercategory for reporting.
+[x] Sorted by date.
+[ ] Year & month columns for grouping????
+[ ] 'sup' supercategory for reporting how to do it????
 [ ] Update supercategories method.
 
 ## FILES
@@ -38,4 +44,4 @@ Expense tracking, classification and report automation.
 [ ] Dictionary for automatic categorization.
 
 ## WATCHOUT!
-[ ] Check for collisions when adding to database.
+[x] Check for collisions when adding to database.
