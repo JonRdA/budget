@@ -1,6 +1,6 @@
 import pandas as pd
 
-class Database(pd.DataFrame):
+class Database():
     """Complete transaction database with multiple account information.
 
     Inherited from pandas dataframe contains all transactions sorted by date
@@ -10,8 +10,11 @@ class Database(pd.DataFrame):
     
     def __init__(self, *args, **kwargs):
         """Pandas dataframe initialization with default parameters."""
-        super().__init__(*args, **kwargs)
+        self.db = pd.DataFrame(*args, **kwargs)
 
+    def __repr__(self):
+        """Print readable representation of Database instance."""
+        return str(self.db)
         
     @classmethod    
     def load(cls, fpath):
@@ -41,4 +44,25 @@ class Database(pd.DataFrame):
         Args:
             fpath (str): file path.
         """
-        self.to_csv(fpath, header=True, index=False, float_format="%.2f")
+        self.db.to_csv(fpath, header=True, index=False, float_format="%.2f")
+
+    def add_account(self, account):
+        """Add account transactions to database.
+
+        Args:
+            account (Account): new account with transactions to be added.
+
+        TODO"""
+        df = pd.concat([self.db, account], ignore_index=True)
+
+        if self.db.iloc[-1, 0] >= account.iloc[0, 0]:
+            # TODO raise warning of duplicate days entered. print number rows in account, also move to function in utils to do this.{;:
+            print("hey carful duplicate days are being entered.")
+            df.drop_duplicates(inplace=True)
+            df.sort_values(["date", "amount"], ignore_index=True, inplace=True)
+
+        self.db = df
+
+if __name__ == "__main__":
+    import budget
+    budget.main()
