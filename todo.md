@@ -3,7 +3,10 @@ Expense tracking, classification and report automation.
 
 ## DEVELOPING
 [x] Change inheritance in Database.
+[ ] parece que al add account se pierde el datatype. BUG
 [ ] Start with reporting options. Temporal & cat-wise.
+[x] Create JSON files for cat, sup, sub.
+[ ] Categorize automatically based on dictionary.
 
 ## IDEAS
 * How to treat special accounts? Joint ones. Should be computed specially

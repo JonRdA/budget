@@ -4,8 +4,8 @@ def expand_date(df):
     Args:
         df (pd.DataFrame): table containing datetime column called "date".
     """
-    df["y"] = df["date"].dt.year
-    df["m"] = df["date"].dt.month
+    df["y"] = df["date"].dt.year.astype("category")
+    df["m"] = df["date"].dt.month.astype("category")
 
 
 

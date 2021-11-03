@@ -9,3 +9,10 @@ __pycache__/
 
 # Log files
 *.log
+
+# Category information
+/json
+
+# Input account information 
+/input
+

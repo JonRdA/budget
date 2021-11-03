@@ -5,6 +5,7 @@ import utils
 
 logger = logging.getLogger(__name__)
 
+
 class Database():
     """Complete transaction database with multiple account information.
 
@@ -68,11 +69,16 @@ class Database():
         utils.expand_date(account)
         df = pd.concat([self.db, account], ignore_index=True)
 
-        if self.db.iloc[-1, 0] >= account.iloc[0, 0]:
-            # TODO raise warning of duplicate days entered. print number rows in account, also move to function in utils to do this.{;:
-            print("hey carful duplicate days are being entered.")
-            df.drop_duplicates(inplace=True)
-            df.sort_values(["date", "amount"], ignore_index=True, inplace=True)
+        # If Account is empty accessing database with iloc will raise error.
+        try:
+            if self.db.iloc[-1, 0] >= account.iloc[0, 0]:
+                # TODO raise warning of duplicate days entered. print number rows in account, also move to function in utils to do this.{;:
+                dups = df[df.duplicated(keep=False)].iloc[:, 0:3]
+                logger.warning(f"Duplicate transactions found:\n{dups}")
+                df.sort_values(["date", "amount"], ignore_index=True,
+                    inplace=True)
+        except IndexError:
+            pass
 
         logger.info(f"Account {df.shape} added to Database {self.db.shape}.")
         self.db = df
