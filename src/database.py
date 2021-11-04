@@ -5,6 +5,8 @@ import utils
 
 logger = logging.getLogger(__name__)
 
+# Solve the constans issue, maybe put them in package init, learn about it.
+VIEW_COLS = ["date", "description", "amount"]       # Represent transactaction
 
 class Database():
     """Complete transaction database with multiple account information.
@@ -21,10 +23,15 @@ class Database():
 
         if not self.db.empty:
             utils.expand_date(self.db)
+            utils.cast_category(self.db)
 
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db)
+
+    def __str__(self):
+        """Print easily readable representation, 'VIEW_COLS' only showed."""
+        return str(self.db[VIEW_COLS])
 
     @classmethod    
     def load(cls, fpath):
@@ -60,27 +67,24 @@ class Database():
             columns=cols)
 
     def add_account(self, account):
-        """Add account transactions to database.
+        """Adds account transactions to database, updates 'db' attribute.
+
+        Raises warning if transactions found in database are added to it.
 
         Args:
             account (Account): new account with transactions to be added.
-
-        TODO"""
+        """
         utils.expand_date(account)
-        df = pd.concat([self.db, account], ignore_index=True)
+        df_0, df_1 = self.db, account
 
-        # If Account is empty accessing database with iloc will raise error.
-        try:
-            if self.db.iloc[-1, 0] >= account.iloc[0, 0]:
-                # TODO raise warning of duplicate days entered. print number rows in account, also move to function in utils to do this.{;:
-                dups = df[df.duplicated(keep=False)].iloc[:, 0:3]
-                logger.warning(f"Duplicate transactions found:\n{dups}")
-                df.sort_values(["date", "amount"], ignore_index=True,
-                    inplace=True)
-        except IndexError:
-            pass
+        # Duplicates index is returned, just warns but they can be deleted.
+        dup_index = utils.find_duplicates(df_0, df_1)
+        if dup_index.any():
+            logger.warning(f"Adding duplicate transactions:\n{df_1[dup_index]}")
 
-        logger.info(f"Account {df.shape} added to Database {self.db.shape}.")
+        logger.info(f"Account {df_1.shape} added to Database {df_0.shape}.")
+        df = df_0.append(df_1, ignore_index=True, sort=["date", "amount"])
+        utils.cast_category(df)
         self.db = df
 
 if __name__ == "__main__":
