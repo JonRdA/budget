@@ -1,4 +1,12 @@
+import logging
+import numpy as np
 import pandas as pd
+
+import utils
+
+logger = logging.getLogger(__name__)
+
+CAT_FPATH = "../json/train.json"
 
 class Account(pd.DataFrame):
     """Partial transaction database with one account information.
@@ -11,6 +19,13 @@ class Account(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         """Pandas dataframe initialization with default parameters."""
         super().__init__(*args, **kwargs)
+        self.sort_values(by=["date", "amount"], ignore_index=True, inplace=True)
+        print(self)
+
+        nan_ind = self.loc[:,["date","description","amount"]].isna().any(axis=1)
+        if nan_ind.any():
+            nan_rows = list(df[nan_ind].index)
+            raise ValueError(f"File '{fpath}' has 'nan' in rows {nan_rows}.")
 
     @classmethod    
     def load(cls, fpath, n_account):
@@ -27,24 +42,34 @@ class Account(pd.DataFrame):
         """
         dt_parser = lambda x : pd.to_datetime(x, format="%d/%m/%Y")
         cname = ["date", "description", "amount", "cat", "sub"]
-        ctype = {"description": "string", "cat": "category", "sub": "category"}
+        ctype = {"description": "string"}
 
         df = pd.read_csv(fpath, header=None, names=cname, dtype=ctype,
             parse_dates=[0], date_parser=dt_parser)
-
-        nan_ind = df.isna().any(axis=1)
-        if nan_ind.any():
-            nan_rows = list(df[nan_ind].index)
-            raise ValueError(f"File '{fpath}' has 'nan' in rows {nan_rows}.")
-
-        # Add account number as category.
         df["account"] = n_account
-        df["account"] = df["account"].astype("category")
 
-        return df.sort_values(by=["date", "amount"], ignore_index=True)
+        return cls(df)
         
+    def modify_cats(self, func, *args, **kwargs):
+        """Modify inplace category and sub-category using passed function.
+
+        Args:
+            func (function): modifying function to be applied.
+
+        Returns:
+            None
+        """
+        if not self.loc[:, ["cat", "sub"]].isna().all().all():
+            logger.warning("Overwriting non-empyt categories")
+        self[["cat", "sub"]] = self.apply(func, axis=1, *args, **kwargs)
+
 
 
 if __name__ == "__main__":
+    # If module directly run, load log configuration for all modules.
+    import logging.config
+    logging.config.fileConfig('../log/logging.conf')
+    logger = logging.getLogger('account')
+
     import budget
     budget.main()

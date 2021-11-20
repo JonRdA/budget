@@ -1,8 +1,9 @@
+import re
+import json
 import pandas as pd
 
-
+CAT_FPATH = "../json/train.json"
 CAT_COLS = ["y", "m", "cat", "sub", "account"]      # Category dtype
-
 
 def expand_date(df):
     """Mutate dataframe by inserting ["year", "month"] columns from date.
@@ -52,6 +53,33 @@ def cast_category(df):
     """
     df[CAT_COLS] = df[CAT_COLS].astype("category")
 
+def detect_cat(row, d):
+    """Modify row cat & sub using description if found in dict d mapping.
+
+    Args:
+        row (pd.Series): Account or Database row.
+        d (dict): dictionary mapping keywords to pair (cat, sub).
+
+    Returns:
+        nr (pd.Series): new row modified with cat & sub set, same row otherwise.
+    """
+    for k, (c, s) in d.items():
+        if re.search(k, row["description"], re.IGNORECASE):
+            return pd.Series([c, s], index=["cat", "sub"])
+    return pd.Series(index=["cat", "sub"])
+
+def load_json(fpath=CAT_FPATH):
+    """Load json dictionary from file path location
+
+    Args:
+        fpath (str): file path.
+
+    Returns:
+        d (dict): loaded dictionary.
+    """
+    with open(fpath, "r") as f:
+        d = json.load(f)
+    return d
 
 #sup_dict = { "essential": ["food", "house"],
 #    "spending": ["leisure", "tech", "vacation", "finance", "education", "personal", "transport"],
@@ -161,5 +189,3 @@ if __name__ == "__main__":
 #
 if __name__ == "__main__":
 
-    import budget
-    budget.main()

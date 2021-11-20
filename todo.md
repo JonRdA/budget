@@ -2,6 +2,9 @@
 Expense tracking, classification and report automation.
 
 ## DEVELOPING
+[ ] Everything in account with modifying factors. is number, when goint to database pass as categorical?
+[ ] Make inline modification function for cat & sub.
+[ ] Make wrapper function with func parameter to modify cat and sub.
 [ ] Categorize automatically based on dictionary.
 [ ] Categorize according to new cats.
 [ ] Start with reporting options. Temporal & cat-wise.
