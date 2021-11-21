@@ -1,9 +1,11 @@
 import re
 import json
+import logging
 import pandas as pd
 
-CAT_FPATH = "../json/train.json"
 CAT_COLS = ["y", "m", "cat", "sub", "account"]      # Category dtype
+
+logger = logging.getLogger(__name__)
 
 def expand_date(df):
     """Mutate dataframe by inserting ["year", "month"] columns from date.
@@ -68,7 +70,7 @@ def detect_cat(row, d):
             return pd.Series([c, s], index=["cat", "sub"])
     return pd.Series(index=["cat", "sub"])
 
-def load_json(fpath=CAT_FPATH):
+def load_json(fpath):
     """Load json dictionary from file path location
 
     Args:
@@ -188,4 +190,10 @@ if __name__ == "__main__":
 #
 #
 if __name__ == "__main__":
+    # If module directly run, load log configuration for all modules.
+    import logging.config
+    logging.config.fileConfig('../log/logging.conf')
+    logger = logging.getLogger('account')
 
+    import budget
+    budget.main()

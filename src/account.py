@@ -6,8 +6,6 @@ import utils
 
 logger = logging.getLogger(__name__)
 
-CAT_FPATH = "../json/train.json"
-
 class Account(pd.DataFrame):
     """Partial transaction database with one account information.
 
@@ -20,7 +18,6 @@ class Account(pd.DataFrame):
         """Pandas dataframe initialization with default parameters."""
         super().__init__(*args, **kwargs)
         self.sort_values(by=["date", "amount"], ignore_index=True, inplace=True)
-        print(self)
 
         nan_ind = self.loc[:,["date","description","amount"]].isna().any(axis=1)
         if nan_ind.any():
@@ -63,7 +60,15 @@ class Account(pd.DataFrame):
             logger.warning("Overwriting non-empyt categories")
         self[["cat", "sub"]] = self.apply(func, axis=1, *args, **kwargs)
 
+    def save(self, fpath):
+        """Save account as .csv file.
 
+        Args:
+            fpath (str): file path.
+        """
+        cols = ["date", "description", "amount", "cat", "sub"]
+        self.to_csv(fpath, header=False, index=False, float_format="%.2f",
+            date_format="%d/%m/%Y", columns=cols)
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.

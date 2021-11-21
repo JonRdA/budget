@@ -2,12 +2,13 @@
 Expense tracking, classification and report automation.
 
 ## DEVELOPING
-[ ] Everything in account with modifying factors. is number, when goint to database pass as categorical?
-[ ] Make inline modification function for cat & sub.
-[ ] Make wrapper function with func parameter to modify cat and sub.
-[ ] Categorize automatically based on dictionary.
-[ ] Categorize according to new cats.
 [ ] Start with reporting options. Temporal & cat-wise.
+[ ] Define overall flow of daily use.
+[ ] Categorize according to new rule/modification.
+[x] Add more options to learning json.
+[x] Make inline modification function for cat & sub.
+[x] Make wrapper function with func parameter to modify cat and sub.
+[x] Categorize automatically based on dictionary.
 [x] Change inheritance in Database.
 [x] parece que al add account se pierde el datatype. solve BUG
 [x] Create JSON files for cat, sup, sub.
@@ -26,7 +27,7 @@ Expense tracking, classification and report automation.
 ## LOAD, CLASSIFY & UPDATE DATABASE
 [x] Load transactions from different accounts.
 [x] Load account number to take into account while reporting.
-[ ] Assign 'cat' and 'sub' from dictionay (JSON?)
+[x] Assign 'cat' and 'sub' from dictionay (JSON?)
 [ ] Assign manually missing categories.
 [x] Add to database.
 

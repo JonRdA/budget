@@ -62,7 +62,7 @@ class Database():
         Args:
             fpath (str): file path.
         """
-        cols = ["date", "description", "amount", "cat", "sub"]
+        cols = ["date", "description", "amount", "account", "cat", "sub"]
         self.db.to_csv(fpath, header=True, index=False, float_format="%.2f",
             columns=cols)
 
