@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import utils
 from account import Account
@@ -31,33 +32,29 @@ def fill_cats(csv_path, csv_save_path=None, json_path=CAT_FPATH):
     flp = int(len(acc) - acc["cat"].isna().sum() / len(acc) * 100)
     logger.info(f"{flp} % of cats were filled on file {csv_save_path}.")
 
+def test():
+    """Main function to test developing code."""
+    pass
 
 def main():
-    fill_cats("../input/nocat.csv", "../input/nocat_result.csv")
-    return
-    a1 = Account.load("../input/nocat.csv", 1)
+    test()
     
+    a1 = Account.load("../input/account_01.csv", 1)
+    a2 = Account.load("../input/account_02.csv", 2)
 
-    #a2 = Account.load("../input/track_account_02.csv", 2)
-    #a1 = Account.load("../input/test0.csv", 1)
-    #a2 = Account.load("../input/test1.csv", 1)
-
-    cat_dict = utils.load_json()
-
-    a1.loc[8, "cat"] = 8
-    a1.modify_cats(utils.detect_cat, d=cat_dict)
-
-    dbs = Database(a1)
-
-    #print(dbs)
-    print(dbs.db.dtypes)
-    return
-
-
+    d = Database(a1)
+    d.add_account(a2)
 
     # Report on cats per month.
-    gb = a.db.groupby(["y", "m", "cat"])
+    gb = d.db.groupby(["y", "m", "cat"])
     q = gb.sum()
+    
+    # Report on cats per month.
+    gb = d.db.groupby("cat")
+    q = gb.sum()
+    plt.pie(q["amount"].abs(), labels=q.index)
+    plt.show()
+    return
 
     # Report of certain cat in time.
     cate = "leisure"

@@ -21,8 +21,8 @@ class Account(pd.DataFrame):
 
         nan_ind = self.loc[:,["date","description","amount"]].isna().any(axis=1)
         if nan_ind.any():
-            nan_rows = list(df[nan_ind].index)
-            raise ValueError(f"File '{fpath}' has 'nan' in rows {nan_rows}.")
+            nan_rows = list(self[nan_ind].index)
+            raise ValueError(f"Account '{self.shape}' has 'nan' in rows {nan_rows}.")
 
     @classmethod    
     def load(cls, fpath, n_account):
@@ -43,7 +43,10 @@ class Account(pd.DataFrame):
 
         df = pd.read_csv(fpath, header=None, names=cname, dtype=ctype,
             parse_dates=[0], date_parser=dt_parser)
+        df.dropna(how="all", inplace=True)
+
         df["account"] = n_account
+        logger.debug(f"Account {df.shape} loaded.")
 
         return cls(df)
         

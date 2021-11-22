@@ -34,16 +34,17 @@ def find_duplicates(df_0, df_1):
 
     # Database with same account & only check date overlap for duplicates.
     df_0 = df_0[df_0["account"] == df_1.loc[1, "account"]]
-    dt_0, dt_1 = df_0.iloc[-1, 0], df_1.iloc[1, 0]
+    if not df_0.empty:
+        dt_0, dt_1 = df_0.iloc[-1, 0], df_1.iloc[1, 0]
 
-    if dt_1 <= dt_0:
-        filt_0 = df_0["date"].between(dt_1, dt_0)
-        df_0 = df_0[filt_0]
+        if dt_1 <= dt_0:
+            filt_0 = df_0["date"].between(dt_1, dt_0)
+            df_0 = df_0[filt_0]
 
-        df_joined = pd.concat([df_0, df_1])
-        dup_index = df_joined.duplicated(keep=False)
-        
-        return dup_index[len(df_0):]
+            df_joined = pd.concat([df_0, df_1])
+            dup_index = df_joined.duplicated(keep=False)
+            
+            return dup_index[len(df_0):]
 
     return pd.Series()
 
@@ -83,117 +84,11 @@ def load_json(fpath):
         d = json.load(f)
     return d
 
-#sup_dict = { "essential": ["food", "house"],
-#    "spending": ["leisure", "tech", "vacation", "finance", "education", "personal", "transport"],
-#    "saving": ["saving"],
-#    "transfer": ["transfer"]}
-#
-#def add_sup(df, sup_dict):
-#    """Add super-categories column to dataframe as specified on sup_dict dict.
-#
-#    Args:
-#        df (pd.DataFrame): transactions data.
-#        sup_dict (dict): super-categories definition.
-#
-#    Returns:
-#        pd.DataFrame: original data with added column.
-#    """
-#    cat = df["cat"]
-#    """Invert dictionary and use it to map cat to supercat"""
-#    sups = invert_dict(sup_dict)
-#    print(sups)
-#    sup = cat.apply(assign_sup, args=(sups,))
-#
-#    df["sup"] = sup
-#    return sup
-#
-#def assign_sup(category, sup_dict):
-#
-#    print(category, sup_dict[category])
-#    return sup_dict[category]
-#
-## HELPER FUNCTIONS
-#
-#def invert_dict(d):
-#    """Invert dictionary converting values to keys. Values can be lists.
-#
-#    Args:
-#        d (dict): dictionary to invert.
-#
-#    Returns:
-#        dictionary
-#    """
-#    nd = {}
-#    for k, vs in d.items():
-#        for v in vs:
-#            nd[v] = k
-#    
-#    return nd
-#
-#
-#
-#
-if __name__ == "__main__":
-
-    import budget
-    budget.main()
-
-
-#sup_dict = { "essential": ["food", "house"],
-#    "spending": ["leisure", "tech", "vacation", "finance", "education", "personal", "transport"],
-#    "saving": ["saving"],
-#    "transfer": ["transfer"]}
-#
-#def add_sup(df, sup_dict):
-#    """Add super-categories column to dataframe as specified on sup_dict dict.
-#
-#    Args:
-#        df (pd.DataFrame): transactions data.
-#        sup_dict (dict): super-categories definition.
-#
-#    Returns:
-#        pd.DataFrame: original data with added column.
-#    """
-#    cat = df["cat"]
-#    """Invert dictionary and use it to map cat to supercat"""
-#    sups = invert_dict(sup_dict)
-#    print(sups)
-#    sup = cat.apply(assign_sup, args=(sups,))
-#
-#    df["sup"] = sup
-#    return sup
-#
-#def assign_sup(category, sup_dict):
-#
-#    print(category, sup_dict[category])
-#    return sup_dict[category]
-#
-## HELPER FUNCTIONS
-#
-#def invert_dict(d):
-#    """Invert dictionary converting values to keys. Values can be lists.
-#
-#    Args:
-#        d (dict): dictionary to invert.
-#
-#    Returns:
-#        dictionary
-#    """
-#    nd = {}
-#    for k, vs in d.items():
-#        for v in vs:
-#            nd[v] = k
-#    
-#    return nd
-#
-#
-#
-#
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config
     logging.config.fileConfig('../log/logging.conf')
-    logger = logging.getLogger('account')
+    logger = logging.getLogger('utils')
 
     import budget
     budget.main()
