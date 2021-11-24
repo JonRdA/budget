@@ -29,22 +29,26 @@ def find_duplicates(df_0, df_1):
     Returns:
         pd.Series: boolean index series indicating duplicates on 'df_1'.
     """
-    if df_0.empty:
-        return pd.Series()
-
-    # Database with same account & only check date overlap for duplicates.
-    df_0 = df_0[df_0["account"] == df_1.loc[1, "account"]]
-    if not df_0.empty:
+    try:
+        # Select same account & only overlaping time.
+        df_0 = df_0[df_0["account"] == df_1.loc[1, "account"]]
         dt_0, dt_1 = df_0.iloc[-1, 0], df_1.iloc[1, 0]
+    except KeyError:
+        # Account is empty, no duplicates.
+        return pd.Series()
+    finally:
+        if df_0.empty:
+            # Database had no transactions of account number.
+            return pd.Series()
 
-        if dt_1 <= dt_0:
-            filt_0 = df_0["date"].between(dt_1, dt_0)
-            df_0 = df_0[filt_0]
+    if dt_1 <= dt_0:
+        filt_0 = df_0["date"].between(dt_1, dt_0)
+        df_0 = df_0[filt_0]
 
-            df_joined = pd.concat([df_0, df_1])
-            dup_index = df_joined.duplicated(keep=False)
-            
-            return dup_index[len(df_0):]
+        df_joined = pd.concat([df_0, df_1])
+        dup_index = df_joined.duplicated(keep=False)
+        
+        return dup_index[len(df_0):]
 
     return pd.Series()
 

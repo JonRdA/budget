@@ -44,6 +44,7 @@ def main():
 
     d = Database(a1)
     d.add_account(a2)
+    return
 
     # Report on cats per month.
     gb = d.db.groupby(["y", "m", "cat"])
