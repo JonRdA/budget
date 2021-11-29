@@ -57,11 +57,38 @@ def main():
     r = Report(d)
     r.select_group(exp)
 
-
-
-    
     gb = r.db.groupby("cat")
-    q = gb.sum()
+    q = gb.sum()["amount"].abs()
+    plot_pie(q)
+
+def plot_pie(srs):
+
+    if srs.min() < 0:
+        raise ValueError(f"Negative values in series {srs}")
+
+    my_circle = plt.Circle((0,0), .7, color="white")
+    names = srs.index
+    sizes = srs
+
+    plt.pie(srs, labels=names, wedgeprops={'linewidth':7, 'edgecolor':'white'})
+    p = plt.gcf()
+    p.gca().add_artist(my_circle)
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     height = -q["amount"]
     bars = q.index
