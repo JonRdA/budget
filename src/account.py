@@ -11,7 +11,6 @@ class Account(pd.DataFrame):
 
     Inherited from pandas dataframe contains all transactions sorted by date
     as well as their amount, category, subcategory and account.
-
     """
     
     def __init__(self, *args, **kwargs):

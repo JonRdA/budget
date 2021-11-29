@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import utils
+from report import Report
 from account import Account
 from database import Database
 
@@ -39,12 +40,57 @@ def test():
 def main():
     test()
     
-    a1 = Account.load("../input/account_01.csv", 1)
-    a2 = Account.load("../input/account_02.csv", 2)
+    #a1 = Account.load("../input/account_01.csv", 1)
+    #a2 = Account.load("../input/account_02.csv", 2)
+    
+    #d = Database(a1)
+    #d.add_account(a2)
 
-    d = Database(a1)
-    d.add_account(a2)
+    d = Database.load("../input/database.csv")
+
+
+
+    # Select a subset of cats
+    dict_group = utils.load_json("../json/groups.json")
+    exp = dict_group["expenses"]
+
+    r = Report(d)
+    r.select_group(exp)
+
+
+
+    
+    gb = r.db.groupby("cat")
+    q = gb.sum()
+
+    height = -q["amount"]
+    bars = q.index
+    x_pos = np.arange(len(bars))
+
+    # Create bars and choose color
+    plt.bar(x_pos, height, color = (0.5,0.1,0.5,0.6))
+
+    # Add title and axis names
+    plt.title('My title')
+    plt.xlabel('categories')
+    plt.ylabel('values')
+
+    # Create names on the x axis
+    plt.xticks(x_pos, bars)
+
+    # Show graph
+    plt.show()
+    plt.pie(q["amount"].abs(), labels=q.index)
+
+    plt.show()
     return
+
+    
+    df = d.db
+    filt = df["cat"].isin(exp)
+    d.db = df[filt]
+
+
 
     # Report on cats per month.
     gb = d.db.groupby(["y", "m", "cat"])
