@@ -22,7 +22,7 @@ class Report():
     
     def __repr__(self):
         """Print readable representation of Database instance."""
-        return str(self.db)
+        return str(self.db[VIEW_COLS])
 
     def select_group(self, group, col="cat"):
         """Select in database transactions whose column is listed in 'group'.
