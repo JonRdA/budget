@@ -19,11 +19,22 @@ class Report():
             db (pd.DataFrame): db attribute of Database object.
         """
         self.db = database.db.copy()
+        self.correct_account(2, lambda x: x/2)      # Custom for account #2
     
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db[VIEW_COLS])
 
+    def correct_account(self, account, func):
+        """Modify amount values of 'account' number based on 'func'.
+        Args:
+            account (int): number of account to modify.
+            func (function): modification to perform.
+        """
+        filt = self.db["account"] == account
+        self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
+        logger.warning(f"Account {account} values modified.")
+        
     def select_group(self, group, col="cat"):
         """Select in database transactions whose column is listed in 'group'.
         
@@ -37,6 +48,7 @@ class Report():
         # Remove unused categories in categorical data.
         rm_func = lambda x: x.cat.remove_unused_categories()
         self.db[CAT_COLS] = self.db[CAT_COLS].apply(rm_func, axis=0)
+
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.

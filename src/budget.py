@@ -37,20 +37,29 @@ def test():
     """Main function to test developing code."""
     pass
 
-def plot_pie(srs):
+def plot_pie(srs, title=""):
+    """Plot donut shaped pie chart.
 
+    Args:
+        srs (pd.Series): same sign data with labels in index.
+
+    Returns:
+        p (Figure): generated plot.
+    """
     if srs.min() < 0:
         raise ValueError(f"Negative values in series {srs}")
 
-    my_circle = plt.Circle((0,0), .7, color="white")
-    names = srs.index
-    sizes = srs
 
-    plt.pie(srs, labels=names, wedgeprops={'linewidth':7, 'edgecolor':'white'})
-    p = plt.gcf()
-    p.gca().add_artist(my_circle)
+    fig, ax = plt.subplots(figsize=[8, 10], dpi=200)
+    ax.set_title(title)
+    names = [i.title() for i in srs.index]
+
+    ax.pie(srs, labels=names, wedgeprops={'linewidth':7, 'edgecolor':'white'})
+    hole = plt.Circle((0,0), .7, color="white")
+    ax.add_artist(hole)
+
     plt.show()
-    return
+    return fig
 
 def plot_bars(srs):
 
@@ -82,8 +91,8 @@ def main():
     #d = Database(a1)
     #d.add_account(a2)
 
-    d = Database.load("../input/database.csv")
-
+    d = Database.load("../db/database.csv")
+    print(d.db[d.db["cat"] == "nonessential"])
 
 
     # Select a subset of cats
@@ -91,15 +100,6 @@ def main():
     exp = dict_group["expenses"]
 
     r = Report(d)
-    r.select_group(exp)
-
-    gb = r.db.groupby("cat")
-    q = gb.sum()["amount"].abs()
-    plot_bars(q)
-    return
-    plot_pie(q)
-
-
 
     # Report on cats per month.
     gb = d.db.groupby(["y", "m", "cat"])
