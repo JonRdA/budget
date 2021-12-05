@@ -6,7 +6,7 @@ import utils
 logger = logging.getLogger(__name__)
 
 # Solve the constans issue, maybe put them in package init, learn about it.
-VIEW_COLS = ["date", "description", "amount", "cat", "sub"]       # Represent transactaction
+VIEW_COLS = ["date", "description", "amount", "account", "cat", "sub"]       # Represent transactaction
 
 class Database():
     """Complete transaction database with multiple account information.
@@ -81,9 +81,31 @@ class Database():
             logger.warning(f"Adding duplicate transactions:\n{df_1[dup_index]}")
 
         logger.debug(f"Account {df_1.shape} added to Database {df_0.shape}.")
-        df = df_0.append(df_1, ignore_index=True, sort=["date", "amount"])
+        df = df_0.append(df_1, ignore_index=True)
+        df.sort_values(by=["date", "amount"], ignore_index=True, inplace=True)
         utils.cast_category(df)
         self.db = df
+
+    def edit_tag(self, tag_type, old_tag, new_tag):
+        """Edit category or subcategory tag on database.
+
+        Args:
+            tag_type (str): ['cat', 'sub'] which tag type to be edited.
+            old_tag (str): current used tag name.
+            new_tag (str): new tag name to substitute old one.
+        """
+        cats = self.db[tag_type].cat.categories
+        if old_tag not in cats:
+            raise ValueError(f"Old {tag_type} '{old_tag}' not in database.")
+        elif new_tag in cats:
+            raise ValueError(f"New {tag_type} '{new_tag}' already in database.")
+
+        self.db[tag_type] = self.db[tag_type].cat.rename_categories(
+                {old_tag: new_tag})
+
+        changes = self.db[tag_type].value_counts()[new_tag]
+        logger.info(f"{tag_type} '{old_tag}' substituted by '{new_tag}' in "
+                f"{changes} transactions.")
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
