@@ -36,7 +36,7 @@ class Report():
         logger.warning(f"Account {account} values modified.")
         
     def select_group(self, group, col="cat"):
-        """Select in database transactions whose column is listed in 'group'.
+        """Select database transactions whose column is listed in 'group'.
         
         Args:
             group (list): group of categores.
@@ -48,7 +48,6 @@ class Report():
         # Remove unused categories in categorical data.
         rm_func = lambda x: x.cat.remove_unused_categories()
         self.db[CAT_COLS] = self.db[CAT_COLS].apply(rm_func, axis=0)
-
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.

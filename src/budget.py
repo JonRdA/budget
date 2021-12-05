@@ -33,16 +33,6 @@ def auto_tag(csv_path, csv_save_path=None, json_path=CAT_FPATH):
     flp = int((len(acc) - acc["cat"].isna().sum()) / len(acc) * 100)
     logger.info(f"{flp} % of cats were filled on file {csv_save_path}.")
 
-def acc_to_db():
-    """Accounts to database. Load account info, merge and save database."""
-    a1 = Account.load("../input/account_01.csv", 1)
-    a2 = Account.load("../input/account_02.csv", 2)
-    
-    d = Database(a1)
-    d.add_account(a2)
-
-    d.save("../db/database.csv")
-
 def plot_pie(srs, title=""):
     """Plot donut shaped pie chart.
 
@@ -55,13 +45,22 @@ def plot_pie(srs, title=""):
     if srs.min() < 0:
         raise ValueError(f"Negative values in series {srs}")
 
+    cmap = plt.get_cmap("Dark2")
+    clrs = [cmap(i) for i in range(len(srs))]
 
-    fig, ax = plt.subplots(figsize=[8, 10], dpi=200)
+    r = .7          # circle radious
+    lbld = 1.1      # label distance
+    pctd = ((r + 1) / 2) * .98    # percent number distance
+
+    fig, ax = plt.subplots(figsize=[8, 10], dpi=100)
     ax.set_title(title)
     names = [i.title() for i in srs.index]
 
-    ax.pie(srs, labels=names, wedgeprops={'linewidth':7, 'edgecolor':'white'})
-    hole = plt.Circle((0,0), .7, color="white")
+    ax.pie(srs, labels=names, colors=clrs,
+            autopct="%1.0f%%", pctdistance=pctd, 
+            wedgeprops={'linewidth':7, 'edgecolor':'white'},
+            textprops={"fontsize": 17})
+    hole = plt.Circle((0,0), r, color="white")
     ax.add_artist(hole)
 
     plt.show()
@@ -88,16 +87,36 @@ def plot_bars(srs):
     plt.show()
     return
 
+def acc_to_db():
+    """Accounts to database. Load account info, merge and save database."""
+    a1 = Account.load("../input/account_01.csv", 1)
+    a2 = Account.load("../input/account_02.csv", 2)
+    
+    d = Database(a1)
+    d.add_account(a2)
+
+    d.save("../db/database.csv")
+
 def test():
     """Main function to test developing code."""
     
     d = Database.load("../db/database.csv")
     r = Report(d)
+    jsondict = utils.load_json("../json/groups.json")
+    lst = jsondict["expenses"]
+    r.select_group(lst)
 
     db = d.db
     dr = r.db
 
+    g = dr.groupby(["m", "cat"], observed=True)
+    df = g.sum()
+    for m in range(8, 13):
+        srs = df.loc[m, :].squeeze().abs()
+        print((srs))
+        plot_pie(srs)
     return
+
 
     # Select a subset of cats
     dict_group = utils.load_json("../json/groups.json")
