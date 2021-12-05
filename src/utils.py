@@ -60,12 +60,12 @@ def cast_category(df):
     """
     df[CAT_COLS] = df[CAT_COLS].astype("category")
 
-def detect_cat(row, d):
+def assign_tags(row, d):
     """Modify row cat & sub using description if found in dict d mapping.
 
     Args:
         row (pd.Series): Account or Database row.
-        d (dict): dictionary mapping keywords to pair (cat, sub).
+        d (dict): dictionary mapping keywords to tags (pair of [cat, sub].
 
     Returns:
         nr (pd.Series): new row modified with cat & sub set, same row otherwise.

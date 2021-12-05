@@ -49,7 +49,7 @@ class Account(pd.DataFrame):
 
         return cls(df)
         
-    def modify_cats(self, func, *args, **kwargs):
+    def modify_tags(self, func, *args, **kwargs):
         """Modify inplace category and sub-category using passed function.
 
         Args:

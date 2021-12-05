@@ -64,6 +64,8 @@ class Database():
         self.db.to_csv(fpath, header=True, index=False, float_format="%.2f",
             columns=cols)
 
+        logger.info(f"Database {self.db.shape} saved on file '{fpath}'.")
+
     def add_account(self, account):
         """Adds account transactions to database, updates 'db' attribute.
 
@@ -96,9 +98,9 @@ class Database():
         """
         cats = self.db[tag_type].cat.categories
         if old_tag not in cats:
-            raise ValueError(f"Old {tag_type} '{old_tag}' not in database.")
+            raise ValueError(f"old {tag_type} '{old_tag}' not in database.")
         elif new_tag in cats:
-            raise ValueError(f"New {tag_type} '{new_tag}' already in database.")
+            raise ValueError(f"new {tag_type} '{new_tag}' already in database.")
 
         self.db[tag_type] = self.db[tag_type].cat.rename_categories(
                 {old_tag: new_tag})
