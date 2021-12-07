@@ -102,23 +102,18 @@ def test():
     
     d = Database.load("../db/database.csv")
     r = Report(d)
-    jsondict = utils.load_json("../json/groups.json")
-    lst = jsondict["expenses"]
-    r.select_group(lst)
 
-    db = d.db
-    dr = r.db
-
-    g = dr.groupby(["m", "cat"], observed=True)
-    df = g.sum()
-    for m in range(8, 13):
-        srs = df.loc[m, :].squeeze().abs()
-        print((srs))
-        plot_pie(srs)
+    r.load_sup("../json/groups.json")
+    r.expense_evolution()
     return
 
+    print(r.msup)
+    r.msup.plot.bar()
+    plt.show()
 
-    # Select a subset of cats
+    return
+
+# Select a subset of cats
     dict_group = utils.load_json("../json/groups.json")
     exp = dict_group["expenses"]
 
@@ -127,7 +122,7 @@ def test():
     # Report on cats per month.
     gb = d.db.groupby(["y", "m", "cat"])
     q = gb.sum()
-    
+
     # Report on cats per month.
     gb = d.db.groupby("cat")
     q = gb.sum()
