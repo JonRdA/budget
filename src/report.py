@@ -1,4 +1,5 @@
 import logging
+import datetime
 import numpy as np
 import pandas as pd
 
@@ -60,13 +61,15 @@ class Report():
         self._monthly_sup()
 
     def _monthly_sup(self):
-        """Calculate monthly summary for groups and save as df attribute."""
+        """Calculate monthly summary sup and save as date index df attribute."""
         df = pd.DataFrame()
         for k, v in self.sup.items():
-            df[k] = v.groupby(["y", "m"]).sum()
+            df[k] = v.groupby(["y", "m"], observed=True).sum()
 
+        utils.date_index(df)
         self.msup= df
 
+    # TODO part of summary function to build.
     def expense_evolution(self):
         df = self.msup
         ess = df["essential"]

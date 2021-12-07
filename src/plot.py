@@ -38,25 +38,30 @@ def pie(srs, title=""):
     plt.show()
     return fig
 
-def bars(srs):
+def bars(srs, title=""):
     # TODO
     # fix multiindex to get good lables
-
     height = srs
     bars = srs.index
-    print(bars)
-    x_pos = np.arange(len(bars))
+    #print(bars)
+    ind = np.arange(len(bars))
+
+    fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
+
+    ax.bar(bars, height, color = (0.5,0.1,0.5,0.6), width=40)
+
+    ax.set_title(title)
+    ax.set_xlabel("Time [months]")
+    ax.set_ylabel("Amount [€]")
+    #ax.set_xticks(ind)
+    #ax.legend()
 
     # Create bars and choose color
-    plt.bar(x_pos, height, color = (0.5,0.1,0.5,0.6))
 
     # Add title and axis names
-    plt.title('My title')
-    plt.xlabel('categories')
-    plt.ylabel('values')
+    #plt.xlabel('categories')
 
     # Create names on the x axis
-    plt.xticks(x_pos, bars)
 
     # Show graph
     plt.show()
@@ -66,3 +71,6 @@ def sbars(df):
     pass
     #stacked bars
 
+if __name__ == "__main__":
+    import budget
+    budget.main()

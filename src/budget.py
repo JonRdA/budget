@@ -47,13 +47,35 @@ def acc_to_db():
 def test():
     """Main function to test developing code."""
     
-    d = Database.load("../db/database.csv")
+    import datetime
+    #d = Database.load("../db/database.csv")
+    d = Database.load("../db/test_db.csv")
+    
     r = Report(d)
+
+    df = r.db
+
+    g = df.groupby(["y", "m", "sub"], observed=True).sum()
+    print(g.head(40))
+
+
+    return
     r.load_sup("../json/groups.json")
 
-    a = r.msup
-    a = ac["expenses"].squeeze()
+    z = r.msup
+    print(z)
+    
+    return
+
+    exp = r.sup["expenses"]
+    inc = r.sup["income"]
+
+    mexp = a["expenses"]
+    minc = a["income"]
+
     print(a)
+
+    a = a["expenses"].squeeze()
     plot.bars(a)
 
     #r.msup.plot.bar()

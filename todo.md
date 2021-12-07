@@ -5,7 +5,8 @@ Expense tracking, classification and report automation.
 - [x] Pass nonessential to 'buy' cat.
 - [x] Change cats with rules.
 - [x] Set daily usage functions.
-- [ ] Add barplot functions, stacked and not.
+- [ ] Utils multiindex to datetime.
+- [ ] Add barplot functions, stacked and not. convert to datet, for x axis.
 - [ ] Study color, load globally?
 
 ## REPORTING
@@ -16,6 +17,15 @@ Expense tracking, classification and report automation.
     * Barplot accepts 2 or more inputs.
 
 # IDEAS
+* Problems, sumarry supercats 'msup', monthly sup have multiindex.
+  Plotting is difficult.
+    * Pass to unidimensional index of datetime at creation. Don't like. Does
+      the multiindex have any advantage?
+        * I can further groupby
+        * New vals are inserted correctly, so are with datet index.
+    * Correct in plotting function>
+        * By passing to datetime and adjusting width
+        * Any other means.
 * Functions:
     * Basic: data selection, plotting.
     * Abastract: select, print & plotting (needs 2 datetimes as input).
