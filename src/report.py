@@ -1,7 +1,6 @@
 import logging
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 import utils
 
@@ -64,7 +63,7 @@ class Report():
         """Calculate monthly summary for groups and save as df attribute."""
         df = pd.DataFrame()
         for k, v in self.sup.items():
-            df[k] = v.groupby("m").sum()
+            df[k] = v.groupby(["y", "m"]).sum()
 
         self.msup= df
 
