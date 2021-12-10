@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -67,15 +68,18 @@ def bars(srs, title=""):
 def sbars(df, title=""):
     #stacked bars
     time = df.index
-    h1 = df.iloc[:, 0]
-    h2 = df.iloc[:, 1]
+    h0 = np.zeros(len(time))
 
     fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
 
-    ax.bar(time, h1, color = (0.5,0.1,0.5,0.6), width=25)
+    for col in df:
+        ax.bar(time, df[col], bottom=h0 , width=25, label=col)
+        h0 += df[col]
 
-    ax.bar(time, h2, bottom=h1, width=25)
+
+
     plt.grid()
+    plt.legend()
 
     ax.set_title(title)
     ax.set_xlabel("Time [months]")

@@ -52,11 +52,10 @@ def test():
     r.group_tags()
     tags = r.tags
 
-    ess = tags[("sup", "essential")]
-    ess.name = "essential"
-    non = tags[("sup", "nonessential")]
-    non.name = "nonessential"
+    ess = tags["essential"]
+    non = tags["nonessential"]
     df = pd.DataFrame([ess, non]).transpose()
+    df = tags[["super", "meat", "fruit"]]
     plot.sbars(df)
 
 def main():
