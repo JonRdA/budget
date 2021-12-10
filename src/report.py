@@ -60,8 +60,6 @@ class Report():
         gpr = pd.Grouper(key="date", freq=self.freq, closed="left")
         df = self.db.groupby([gpr, *tags], observed=True).sum()
 
-        if len(tags) == 1:
-            df.columns = tags      # for correct multindex when unpacked.
         return df
 
     def group_tags(self, gpath=GROUPS):
@@ -81,7 +79,7 @@ class Report():
 
         # Pass grouped tags to dataframe format.
         tags = cat.unstack(level=-1).join(sub.unstack(level=-1))
-        tags.columns.names=["ttype", "tag"]
+        tags.columns = tags.columns.droplevel()
         sups = {}
 
         # Group-by of categories db. Select group from cat & add sum to tags.
@@ -90,7 +88,7 @@ class Report():
         for k, v in d.items():
             cats = cat.loc[(lvls, v), :]
             sups[k] = cats
-            tags.loc[:, ("sup", k)] = cats.groupby(pd.Grouper(level="date")).sum()
+            tags.loc[:, k] = cats.groupby(pd.Grouper(level="date")).sum()
 
         self.tags = tags
         self.sups = sups
