@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -44,7 +43,7 @@ def bars(srs, title=""):
     height = srs
     bars = srs.index
     #print(bars)
-    ind = np.arange(len(bars))
+    ind = list(range(len(bars)))
 
     fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
 
