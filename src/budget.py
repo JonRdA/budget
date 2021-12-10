@@ -12,6 +12,7 @@ from database import Database
 logger = logging.getLogger(__name__)
 
 CAT_FPATH = "../json/transaction_tags.json"
+GROUPS = "../json/groups.json"
 
 def auto_tag(csv_path, csv_save_path=None, json_path=CAT_FPATH):
     """Modify transaction csv file by filling cat & sub using dictionary data.
@@ -46,42 +47,37 @@ def acc_to_db():
 
 def test():
     """Main function to test developing code."""
-    
-    import datetime
     #d = Database.load("../db/database.csv")
     d = Database.load("../db/test_db.csv")
-    
     r = Report(d)
-
     df = r.db
 
-    g = df.groupby(["y", "m", "sub"], observed=True).sum()
-    print(g.head(40))
+    g1 = r.group_by("cat")
+    g1 = g1.unstack(level=-1)
+    g2 = r.group_by("sub")
+    g2 = g2.unstack(level=-1)
+    gg = g1.join(g2)
 
+    d = utils.load_json(GROUPS)
+    g1 = r.group_by("cat")
+    lvls = g1.index.get_level_values(0)
+    d1 = lvls
 
-    return
-    r.load_sup("../json/groups.json")
+    v = d["expenses"]
 
-    z = r.msup
+    z = g1.loc[(d1, v), :]
     print(z)
-    
+    return
+    #z = g1.loc[(
+    print(z)
+
+
+    r.load_sup(GROUPS)
+    return
+    z = df.loc[(lvls[0], "car"), :]
     return
 
-    exp = r.sup["expenses"]
-    inc = r.sup["income"]
 
-    mexp = a["expenses"]
-    minc = a["income"]
-
-    print(a)
-
-    a = a["expenses"].squeeze()
-    plot.bars(a)
-
-    #r.msup.plot.bar()
-    #plt.show()
-
-    return
 
 def main():
     test()

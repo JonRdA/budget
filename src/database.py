@@ -5,9 +5,6 @@ import utils
 
 logger = logging.getLogger(__name__)
 
-# Solve the constans issue, maybe put them in package init, learn about it.
-VIEW_COLS = ["date", "description", "amount", "account", "cat", "sub"]       # Represent transactaction
-
 class Database():
     """Complete transaction database with multiple account information.
 
@@ -22,16 +19,11 @@ class Database():
         logger.debug(f"Database {self.db.shape} created.")
 
         if not self.db.empty:
-            utils.expand_date(self.db)
             utils.cast_category(self.db)
 
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db)
-
-    def __str__(self):
-        """Print easily readable representation, 'VIEW_COLS' only showed."""
-        return str(self.db[VIEW_COLS])
 
     @classmethod    
     def load(cls, fpath):
@@ -74,7 +66,6 @@ class Database():
         Args:
             account (Account): new account with transactions to be added.
         """
-        utils.expand_date(account)
         df_0, df_1 = self.db, account
 
         # Duplicates index is returned, just warns but they can be deleted.

@@ -7,7 +7,6 @@ import utils
 
 logger = logging.getLogger(__name__)
 
-VIEW_COLS = ["date", "description", "amount", "cat", "sub"]       # Represent transaction
 CAT_COLS = ["y", "m", "cat", "sub", "account"]      # Category dtype
 
 class Report():
@@ -31,7 +30,7 @@ class Report():
     
     def __repr__(self):
         """Print readable representation of Database instance."""
-        return str(self.db[VIEW_COLS])
+        return str(self.db)
 
     def correct_account(self, account, func):
         """Modify amount values of 'account' number based on 'func'.
@@ -43,8 +42,18 @@ class Report():
         self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
         logger.warning(f"Account {account} values modified.")
         
+    def group_by(self, col, freq="M"):
+        """Calculate summary df summing amounts for all cat & sub on freq.
+
+        TODO
+        """
+        gpr = pd.Grouper(key="date", freq=freq)
+        df = self.db.groupby([gpr, col], observed=True).sum()
+        df.columns = [col]
+        return df
+
     def load_sup(self, fpath):
-        """Load 'groups' (dict) from json & save attribute with transaction sum.
+        """Add 'sup' tag to database, using (dict) from json & save attribute with transaction sum.
 
         Args:
             fpath (str): path to json file containing cat groups.
@@ -69,16 +78,6 @@ class Report():
         utils.date_index(df)
         self.msup= df
 
-    # TODO part of summary function to build.
-    def expense_evolution(self):
-        df = self.msup
-        ess = df["essential"]
-        non = df["nonessential"]
-        ind = ess.index
-
-        plt.bar(ind, ess)
-        plt.bar(ind, non, bottom=ess, color="r")
-        plt.show()
 
     # DEPRECATED DELETE?
     def select_group(self, group, col="cat"):

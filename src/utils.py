@@ -4,18 +4,9 @@ import logging
 import datetime
 import pandas as pd
 
-CAT_COLS = ["y", "m", "cat", "sub", "account"]      # Category dtype
+CAT_COLS = ["cat", "sub", "account"]      # Category dtype
 
 logger = logging.getLogger(__name__)
-
-def expand_date(df):
-    """Mutate dataframe by inserting ["year", "month"] columns from date.
-
-    Args:
-        df (pd.DataFrame): table containing datetime column called "date".
-    """
-    df["y"] = df["date"].dt.year
-    df["m"] = df["date"].dt.month
 
 def find_duplicates(df_0, df_1):
     """Find duplicate transactions on df_1 that already exist on df_0.
