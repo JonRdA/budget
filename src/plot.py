@@ -39,15 +39,13 @@ def pie(srs, title=""):
 
 def bars(srs, title=""):
     # TODO
-    # fix multiindex to get good lables
     height = srs
-    bars = srs.index
+    time = srs.index
     #print(bars)
-    ind = list(range(len(bars)))
 
     fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
 
-    ax.bar(bars, height, color = (0.5,0.1,0.5,0.6), width=40)
+    ax.bar(time, height, color = (0.5,0.1,0.5,0.6), width=25)
 
     ax.set_title(title)
     ax.set_xlabel("Time [months]")
@@ -64,11 +62,26 @@ def bars(srs, title=""):
 
     # Show graph
     plt.show()
-    return
+    return fig
 
-def sbars(df):
-    pass
+def sbars(df, title=""):
     #stacked bars
+    time = df.index
+    h1 = df.iloc[:, 0]
+    h2 = df.iloc[:, 1]
+
+    fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
+
+    ax.bar(time, h1, color = (0.5,0.1,0.5,0.6), width=25)
+
+    ax.bar(time, h2, bottom=h1, width=25)
+    plt.grid()
+
+    ax.set_title(title)
+    ax.set_xlabel("Time [months]")
+    ax.set_ylabel("Amount [€]")
+
+    plt.show()
 
 if __name__ == "__main__":
     import budget

@@ -11,10 +11,9 @@ from database import Database
 
 logger = logging.getLogger(__name__)
 
-CAT_FPATH = "../json/transaction_tags.json"
-GROUPS = "../json/groups.json"
+AUTOTAG = "../json/transaction_tags.json"
 
-def auto_tag(csv_path, csv_save_path=None, json_path=CAT_FPATH):
+def auto_tag(csv_path, csv_save_path=None, json_path=AUTOTAG):
     """Modify transaction csv file by filling cat & sub using dictionary data.
 
     Args:
@@ -49,11 +48,16 @@ def test():
     """Main function to test developing code."""
     #d = Database.load("../db/database.csv")
     d = Database.load("../db/test_db.csv")
-    r = Report(d)
+    r = Report(d, freq="M")
     r.group_tags()
-    df = r.tags
-    plt.plot(df[("cat", "car")], "ro")
-    plt.show()
+    tags = r.tags
+
+    ess = tags[("sup", "essential")]
+    ess.name = "essential"
+    non = tags[("sup", "nonessential")]
+    non.name = "nonessential"
+    df = pd.DataFrame([ess, non]).transpose()
+    plot.sbars(df)
 
 def main():
     test()
@@ -66,5 +70,7 @@ if __name__ == "__main__":
     import logging.config
     logging.config.fileConfig('../log/logging.conf')
     logger = logging.getLogger('budget')
+    
+    pd.set_option("display.float_format", "{:.2f}".format)
 
     main()
