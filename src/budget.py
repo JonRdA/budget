@@ -11,7 +11,7 @@ from database import Database
 
 logger = logging.getLogger(__name__)
 
-AUTOTAG = "../json/transaction_tags.json"
+AUTOTAG = "../json/auto_tag.json"
 
 def auto_tag(csv_path, csv_save_path=None, json_path=AUTOTAG):
     """Modify transaction csv file by filling cat & sub using dictionary data.
