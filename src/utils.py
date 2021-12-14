@@ -80,18 +80,19 @@ def load_json(fpath):
         d = json.load(f)
     return d
 
-def date_index(df):
-    """Mutate dataframe with MultiIndex [y, m] and convert it to datetime index.
-
-    Year and month are be converted to 'datetime.date' of first day of month.
-
-    Args:
-        df (pd.Dataframe): has MultiIndex with year & month ["y", "m"] factors.
-    """
-    df.reset_index(inplace=True)
-    ind = df.apply(lambda x: datetime.date(int(x["y"]), int(x["m"]), 1), axis=1)
-    df.drop(labels=["y", "m"], axis=1)
-    df.index = ind
+# TODO DELETE? DEPRECATED, NOT IN USE ANYMORE
+#def date_index(df):
+#    """Mutate dataframe with MultiIndex [y, m] and convert it to datetime index.
+#
+#    Year and month are be converted to 'datetime.date' of first day of month.
+#
+#    Args:
+#        df (pd.Dataframe): has MultiIndex with year & month ["y", "m"] factors.
+#    """
+#    df.reset_index(inplace=True)
+#    ind = df.apply(lambda x: datetime.date(int(x["y"]), int(x["m"]), 1), axis=1)
+#    df.drop(labels=["y", "m"], axis=1)
+#    df.index = ind
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
