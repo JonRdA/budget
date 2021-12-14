@@ -70,7 +70,7 @@ def sbars(df, title=""):
     time = df.index
     h0 = np.zeros(len(time))
 
-    fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
+    fig, ax = plt.subplots(figsize=[14, 8], dpi=100)
 
     for col in df:
         ax.bar(time, df[col], bottom=h0 , width=25, label=col)
