@@ -49,9 +49,10 @@ def test():
     #d = Database.load("../db/database.csv")
     d = Database.load("../db/test_db.csv")
     r = Report(d, freq="M")
-    r.group_db()
     tdb = r.tdb
-    print(tdb)
+
+    car = r.group_cat("expenses")
+    print(car.sum(axis=1))
 
 def main():
     test()

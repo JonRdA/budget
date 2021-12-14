@@ -5,7 +5,7 @@ import utils
 
 logger = logging.getLogger(__name__)
 
-TAGS = "../json/cats.json"
+CATS = "../json/cats.json"
 
 class Report():
     """Class for report evaluation: grouping & breakdown of transactions.
@@ -18,7 +18,7 @@ class Report():
             gdb (pd.DataFrame): grouped database of subs, resampled at freq.
         """
 
-    def __init__(self, database, freq="M", sups_file = TAGS):
+    def __init__(self, database, freq="M", cat_file = CATS):
         """Instanciate report object loading database.
 
         Args:
@@ -26,10 +26,11 @@ class Report():
             freq (str): valid pandas offset string aliases.
             sups_file (str): path to supercategory definition JSON file.
         """
-        self.db = database.db.copy().round({"amount":2})
-        self.sups = utils.load_json(sups_file)
         self.freq = freq
+        self.db = database.db.copy()
+        self.cats = utils.load_json(cat_file)
         self.correct_account(2, lambda x: x/2)      # Custom for account #2
+        self.group_tags()
     
     def __repr__(self):
         """Print readable representation of Database instance."""
@@ -45,7 +46,7 @@ class Report():
         self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
         logger.warning(f"Account {account} values modified.")
         
-    def group_db(self):
+    def group_tags(self):
         """Group & resample database storing as `tdb` tag-database attribute"""
         gpr = pd.Grouper(key="date", freq=self.freq, closed="left")
         tdb = self.db.groupby([gpr, "tag"], observed=True).sum()
@@ -54,6 +55,16 @@ class Report():
         self.tdb = tdb.unstack(level=-1)
         self.tdb.columns = self.tdb.columns.droplevel()
 
+    def group_cat(self, cat):
+        # TODO recursive check if tag is a group. Change name.
+        res = pd.DataFrame()
+        for tag in self.cats[cat]:
+            try:
+                res[tag] = self.tdb[tag]
+            except KeyError:
+                pass
+
+        return res
 
 
 
