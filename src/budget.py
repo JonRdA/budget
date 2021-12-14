@@ -49,32 +49,9 @@ def test():
     #d = Database.load("../db/database.csv")
     d = Database.load("../db/test_db.csv")
     r = Report(d, freq="M")
-    r.group_tags()
-    sups = r.sups
-    tags = r.tags
-
-    a = sups["expenses"]
-    a = a.iloc[0:7,:]
-    #print(a)
-
-    import report
-    d = utils.load_json(report.GROUPS)
-    sup = "expenses"
-    lst = d[sup]
-
-    z = pd.DataFrame()
-    for i in lst:
-        if i in tags.columns:
-            z[i] = tags[i]
-
-    w = z.iloc[0, :]
-    
-    print(w)
-    print(a)
-    print(w.sum())
-    print(a.sum())
-    
-
+    r.group_db()
+    tdb = r.tdb
+    print(tdb)
 
 def main():
     test()
