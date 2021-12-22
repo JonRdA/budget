@@ -26,11 +26,13 @@ class Report():
             freq (str): valid pandas offset string aliases.
             sups_file (str): path to supercategory definition JSON file.
         """
-        self.freq = freq
+        self.f= freq 
         self.db = database.db.copy()
         self.cats = utils.load_json(cat_file)
         self.correct_account(2, lambda x: x/2)      # Custom for account #2
-        self.group_tags()
+        #self.tdb = self._group_tags()
+        self._group_tags()
+        self.cdb = pd.DataFrame()
     
     def __repr__(self):
         """Print readable representation of Database instance."""
@@ -46,26 +48,48 @@ class Report():
         self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
         logger.warning(f"Account {account} values modified.")
         
-    def group_tags(self):
+    def _group_tags(self):
         """Group & resample database storing as `tdb` tag-database attribute"""
-        gpr = pd.Grouper(key="date", freq=self.freq, closed="left")
+        gpr = pd.Grouper(key="date", freq=self.f, closed="left")
         tdb = self.db.groupby([gpr, "tag"], observed=True).sum()
 
         # Pass grouped & resampled tags to dataframe format.
         self.tdb = tdb.unstack(level=-1)
         self.tdb.columns = self.tdb.columns.droplevel()
 
-    def group_cat(self, cat):
-        # TODO recursive check if tag is a group. Change name.
-        res = pd.DataFrame()
+    def select_cat(self, cat):
+        """Select category data from 'tdb', tag-database.
+
+        Recursive implementation to select all the tags that form the category.
+        If any tag is itself a cat, recursively iterates until tags found.
+        Implements memoization by saving every calculated category.
+        
+        I.e. select "expenses". First tag is "car", so calls itself with cat=car
+        and returns sum of car, then goes to "finance" and repeats.
+
+        Args:
+            cat (str): category to select.
+        """
+        df = pd.DataFrame()
+        
         for tag in self.cats[cat]:
-            try:
-                res[tag] = self.tdb[tag]
-            except KeyError:
-                pass
+            if self.is_cat(tag):
+                try:
+                    srs = self.cdb[tag]
+                except KeyError:
+                    srs = self.select_cat(tag).sum(axis=1)
 
-        return res
+            elif tag in self.tdb.columns:
+                srs = self.tdb[tag]
 
+            df[tag] = srs
+
+        self.cdb[cat] = df.sum(axis=1)      # Memoization
+        return df
+
+    def is_cat(self, name):
+        """Check if string `name` is a category defined in file CATS."""
+        return bool(self.cats.get(name, False))
 
 
 if __name__ == "__main__":
