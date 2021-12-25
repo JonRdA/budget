@@ -80,6 +80,26 @@ def load_json(fpath):
         d = json.load(f)
     return d
 
+def fit_dates(dt_index, t0, t1):
+    """Fit dates to specified `dt_index` for proper selecting between dates.
+
+    If `t0` or `t1` are None or out ouf bound of the `dt_index`, the 
+    max and min values of the index are returned, otherwise are untouched.
+
+    Args:
+        dt_index (DatetimeIndex): panda object's index.
+        t0 (datetime/str): initial date (str format: "yyyy-mm-dd").
+        t1 (datetime/str): final date. 
+
+    Returns:
+        t0, t1 (tuple): adjusted dates.
+    """
+    if t0 == None:
+        t0 = dt_index.index[0]
+    if t1 == None:
+        t1 = dt_index.index[-1]
+    return t0, t1
+
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config
