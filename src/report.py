@@ -26,36 +26,16 @@ class Report():
             freq (str): valid pandas offset string aliases.
             sups_file (str): path to supercategory definition JSON file.
         """
-        self.f= freq 
-        self.db = database.db.copy()
+        # Modify account #2 values in half, shared account.
+        mdb = correct_account(database.db, 2, lambda x: x/2)
+
         self.cats = utils.load_json(cat_file)
-        self.correct_account(2, lambda x: x/2)      # Custom for account #2
-        #self.tdb = self._group_tags()
-        self._group_tags()
+        self.tdb = group_tags(mdb, freq)
         self.cdb = pd.DataFrame()
     
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db)
-
-    def correct_account(self, account, func):
-        """Modify amount values of 'account' number based on 'func'.
-        Args:
-            account (int): number of account to modify.
-            func (function): modification to perform.
-        """
-        filt = self.db["account"] == account
-        self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
-        logger.warning(f"Account {account} values modified.")
-        
-    def _group_tags(self):
-        """Group & resample database storing as `tdb` tag-database attribute"""
-        gpr = pd.Grouper(key="date", freq=self.f, closed="left")
-        tdb = self.db.groupby([gpr, "tag"], observed=True).sum()
-
-        # Pass grouped & resampled tags to dataframe format.
-        self.tdb = tdb.unstack(level=-1)
-        self.tdb.columns = self.tdb.columns.droplevel()
 
     def select_cat(self, cat):
         """Select category data from 'tdb', tag-database.
@@ -130,7 +110,41 @@ class Report():
         srs.name = cat
         return srs
 
-        
+
+def correct_account(db, account, func):
+    """Modify amount `db` values of `account` number based on 'func'.
+
+    Args:
+        db (pd.DataFrame): Database object's db attribute.
+        account (int): number of account to modify.
+        func (function): modification to perform.
+
+    Returns:
+        mdb (pd.DataFrame): modified database.
+    """
+    mdb = db.copy()
+    filt = mdb["account"] == account
+    mdb.loc[filt, "amount"]= mdb["amount"][filt].apply(func)
+    logger.warning(f"Account {account} values modified.")
+    return mdb
+    
+def group_tags(db, freq):
+    """Group database `db` by tag & resample with frequency `freq`.
+
+    Args:
+        db (pd.DataFrame): Database object's db attribute.
+        freq (str): valid pandas offset string aliases.
+    
+    Returns:
+        tdb (pd.DataFrame): tag-database.
+    """
+    gpr = pd.Grouper(key="date", freq=freq, closed="left")
+    tdb = db.groupby([gpr, "tag"], observed=True).sum()
+
+    # Pass grouped & resampled tags to dataframe format.
+    tdb = tdb.unstack(level=-1)
+    tdb.columns = tdb.columns.droplevel()
+    return tdb
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
