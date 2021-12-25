@@ -1,4 +1,5 @@
 import logging
+import datetime
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -48,33 +49,18 @@ def test():
     """Main function to test developing code."""
     #d = Database.load("../db/database.csv")
     d = Database.load("../db/test_db.csv")
-    r = Report(d, freq="M")
-    r.group_tags()
-    sups = r.sups
-    tags = r.tags
+    r = Report(d)
+    tdb = r.tdb
 
-    a = sups["expenses"]
-    a = a.iloc[0:7,:]
-    #print(a)
-
-    import report
-    d = utils.load_json(report.GROUPS)
-    sup = "expenses"
-    lst = d[sup]
-
-    z = pd.DataFrame()
-    for i in lst:
-        if i in tags.columns:
-            z[i] = tags[i]
-
-    w = z.iloc[0, :]
-    
-    print(w)
+    #a = r.group_cat("car")
+    t0 = datetime.datetime(2022, 10, 1)
+    t1 = datetime.datetime(2022, 12, 1)
+    a = r.timeline("expenses", (t0, "2022-12-1"))
+    b = r.breakdown("expenses", ("2022-10-1", "2022-12-1"))
     print(a)
-    print(w.sum())
-    print(a.sum())
+    print(b)
     
-
+    #print(a.between(
 
 def main():
     test()

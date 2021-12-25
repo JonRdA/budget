@@ -36,7 +36,7 @@ class Account(pd.DataFrame):
             Account: instance containing loaded transaction file.
         """
         dt_parser = lambda x : pd.to_datetime(x, format="%d/%m/%Y")
-        cname = ["date", "description", "amount", "cat", "sub"]
+        cname = ["date", "description", "amount", "cat", "tag"]
         ctype = {"description": "string"}
 
         df = pd.read_csv(fpath, header=None, names=cname, dtype=ctype,
@@ -57,9 +57,9 @@ class Account(pd.DataFrame):
         Returns:
             None
         """
-        if not self.loc[:, ["cat", "sub"]].isna().all().all():
+        if not self.loc[:, ["cat", "tag"]].isna().all().all():
             logger.warning("Overwriting non-empyt categories")
-        self[["cat", "sub"]] = self.apply(func, axis=1, *args, **kwargs)
+        self[["cat", "tag"]] = self.apply(func, axis=1, *args, **kwargs)
 
     def save(self, fpath):
         """Save account as .csv file.
@@ -67,7 +67,7 @@ class Account(pd.DataFrame):
         Args:
             fpath (str): file path.
         """
-        cols = ["date", "description", "amount", "cat", "sub"]
+        cols = ["date", "description", "amount", "cat", "tag"]
         self.to_csv(fpath, header=False, index=False, float_format="%.2f",
             date_format="%d/%m/%Y", columns=cols)
 

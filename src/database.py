@@ -37,7 +37,7 @@ class Database():
         """
         dt_parser = lambda x : pd.to_datetime(x, format="%Y-%m-%d")
         col_types = {"description": "string", "cat": "category",
-                     "sub": "category", "account": int}
+                     "tag": "category", "account": int}
 
         df = pd.read_csv(fpath, header=0, dtype=col_types,
             parse_dates=[0], date_parser=dt_parser)
@@ -52,7 +52,7 @@ class Database():
         Args:
             fpath (str): file path.
         """
-        cols = ["date", "description", "amount", "account", "cat", "sub"]
+        cols = ["date", "description", "amount", "account", "cat", "tag"]
         self.db.to_csv(fpath, header=True, index=False, float_format="%.2f",
             columns=cols)
 

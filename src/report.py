@@ -5,7 +5,7 @@ import utils
 
 logger = logging.getLogger(__name__)
 
-TAGS = "../json/tags.json"
+CATS = "../json/cats.json"
 
 class Report():
     """Class for report evaluation: grouping & breakdown of transactions.
@@ -13,12 +13,12 @@ class Report():
         Attributes:
             db (pd.DataFrame): complete transaction database (modified).
             freq (str): pandas offset alias for report frequency.
-            sups (dict): list of category names for each supercategory.
+            tags(dict): list of category names for each supercategory.
 
-            tags (pd.DataFrame): resampled & grouped [sub, cat, sup] sums.
+            gdb (pd.DataFrame): grouped database of subs, resampled at freq.
         """
 
-    def __init__(self, database, freq="M", sups_file = SUPS):
+    def __init__(self, database, freq="M", cat_file = CATS):
         """Instanciate report object loading database.
 
         Args:
@@ -26,17 +26,17 @@ class Report():
             freq (str): valid pandas offset string aliases.
             sups_file (str): path to supercategory definition JSON file.
         """
-        self.db = database.db.copy().round({"amount":2})
-        self.supd = utils.load_json(sups_file)
-        self.freq = freq
+        self.f= freq 
+        self.db = database.db.copy()
+        self.cats = utils.load_json(cat_file)
         self.correct_account(2, lambda x: x/2)      # Custom for account #2
+        #self.tdb = self._group_tags()
+        self._group_tags()
+        self.cdb = pd.DataFrame()
     
     def __repr__(self):
         """Print readable representation of Database instance."""
         return str(self.db)
-
-#def breakdown(self, sup, t0, t1):
-#    """Breakdown the groups
 
     def correct_account(self, account, func):
         """Modify amount values of 'account' number based on 'func'.
@@ -48,57 +48,89 @@ class Report():
         self.db.loc[filt, "amount"]= self.db["amount"][filt].apply(func)
         logger.warning(f"Account {account} values modified.")
         
-    def group_by(self, tags):
-        """Calculate summary df summing amounts for all cat & sub on freq.
+    def _group_tags(self):
+        """Group & resample database storing as `tdb` tag-database attribute"""
+        gpr = pd.Grouper(key="date", freq=self.f, closed="left")
+        tdb = self.db.groupby([gpr, "tag"], observed=True).sum()
 
-        Perform a dataframe groupby on specified 'tag' & 'date' resampling to
-        'freq' value. Groupby data per month and cat. If freq is greater than
-        the entire timeline (10Y) it returns the total sum.
+        # Pass grouped & resampled tags to dataframe format.
+        self.tdb = tdb.unstack(level=-1)
+        self.tdb.columns = self.tdb.columns.droplevel()
+
+    def select_cat(self, cat):
+        """Select category data from 'tdb', tag-database.
+
+        Recursive implementation to select all the tags that form the category.
+        If any tag is itself a cat, recursively iterates until tags found.
+        Implements memoization by saving sum of every calculated category.
+        
+        I.e. select "expenses". First tag is "car", so calls itself with cat=car
+        and returns sum of car, then goes to "finance" and repeats.
 
         Args:
-            tags (tuple): tag type where to perform the grouping ["cat", "sub"].
-            freq (str): frequency to resample the resulting time-series.
+            cat (str): category to select.
 
         Returns:
-            df (pd.DataFrame): resampled date index and summed values per tag.
+            df (pd.DataFrame): categories in columns per time rows.
         """
-        gpr = pd.Grouper(key="date", freq=self.freq, closed="left")
-        df = self.db.groupby([gpr, *tags], observed=True).sum()
+        df = pd.DataFrame()
+        for name in self.cats[cat]:
+            if self.is_cat(name):
+                try:
+                    df[name] = self.cdb[name]
+                except KeyError:
+                    df[name] = self.select_cat(name).sum(axis=1)
+            elif name in self.tdb.columns:
+                df[name] = self.tdb[name]
+
+        self.cdb[cat] = df.sum(axis=1)      # Memoization
         return df
 
-    def group_tags(self, gpath=GROUPS):
-        """Categorize transactions by grouping in tags ["cat", "sub", "sup"].
+    def is_cat(self, name):
+        """Check if string `name` is a category defined in file CATS."""
+        return bool(self.cats.get(name, False))
 
-        Stores as attribute 'tags' & 'sups'.
-        'tags' is the sum of all tags resampled to the frequency of the report.
-        'sups' is the breakdown in categories of the groups or supercategories.
+    def timeline(self, name, dates=None):
+        """Obtain timeline of a group between dates (inclusive).
 
         Args:
-            freq (str): frequency to resample the resulting time-series.
-            gpath (str): path to group json file.
+            name (str): category or tag name.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.datetime.
+
+        Returns:
+            srs (pd.Series): group timeline with report's frequency.
         """
-        # Group-by of transaction database.
-        cat = self.group_by(["cat"])
-        sub = self.group_by(["sub"])
+        if self.is_cat(name):
+            srs = self.select_cat(name).sum(axis=1)
+        else:
+            srs = self.tdb[name]
+        srs.name = name     # TODO necessary??
+        
+        if dates is None:
+            return srs
+        return srs[dates[0]: dates[1]]
 
-        # Pass grouped tags to dataframe format.
-        tags = cat.unstack(level=-1).join(sub.unstack(level=-1))
-        tags.columns = tags.columns.droplevel()
+    def breakdown(self, cat, dates=None):
+        """Break down category into tags or subcats between `dates`(inclusive).
 
-        # Ass code related to subs to be deleted. TODO
-        sups = {}
-        # Group-by of categories db. Select group from cat & add sum to tags.
-        lvls = cat.index.get_level_values(0)
-        d = utils.load_json(gpath)
-        for k, v in d.items():
-            cats = cat.loc[(lvls, v), :]
-            sups[k] = cats
-            tags.loc[:, k] = cats.groupby(pd.Grouper(level="date")).sum()
+        Args:
+            cat (str): category name.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.datetime.
 
-        self.tags = tags
-        self.sups = sups
+        Returns:
+            srs (pd.Series): sum of transactions per tag in specidied period.
+        """
+        df = self.select_cat(cat)
+        df.dropna(axis=1, how="all", inplace=True)
 
+        if dates is not None:
+            df = df.loc[dates[0]:dates[1], :]
 
+        srs = df.sum()
+        srs.name = cat
+        return srs
+
+        
 
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
