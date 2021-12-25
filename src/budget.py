@@ -53,12 +53,21 @@ def test():
     tdb = r.tdb
 
     #a = r.group_cat("car")
-    t0 = datetime.datetime(2022, 10, 1)
-    t1 = datetime.datetime(2022, 12, 1)
-    a = r.timeline("expenses", (t0, "2022-12-1"))
-    b = r.breakdown("expenses", ("2022-10-1", "2022-12-1"))
-    print(a)
-    print(b)
+    t0 = datetime.datetime(2020, 10, 1)
+    t1 = datetime.datetime(2032, 12, 1)
+    ess = r.timeline("essential")
+    non = r.timeline("nonessential")
+
+    df = pd.concat([ess, non], axis=1)
+    #plot.sbars(df)
+
+    print(d.db.tail())
+
+    a = r.breakdown("car")
+    plot.pie(a.abs())
+    
+    
+
     
     #print(a.between(
 

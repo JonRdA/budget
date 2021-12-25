@@ -2,11 +2,8 @@
 Expense tracking, classification and report automation.
 
 # TODO
-- [ ] Date selection on tags df
-- [ ] Group loading from 2 files, cats, sups
-- [ ] Group selection on group dict
-- [ ] Rename attributes, groups -> dict, tag_data -> resampled db
-- [ ] Build wrapper methods `timeline` & `breakdown`
+- [x] Group loading from 2 files, cats, sups
+- [x] Build wrapper methods `timeline` & `breakdown`
 - [ ] Improve plots, pie, bar sbar
 
 ## REPORTING
@@ -24,10 +21,8 @@ Stacked barplot with percentages normalized `sbar`?
 # IMPROVEMENTS
 * Database.add_account() -> only check account VS Database, it will detect 2 
   duplicates in account, which should not.
-* Study if report should store attributes or return them.
-* Study if report needs to store complete database.
 
 # FILES
  * Transactions: [individual accounts, database]
- * JSON:  [auto_tag, cats, sups]
+ * JSON:  [auto_tag, cats]
 
