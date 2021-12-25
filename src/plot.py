@@ -42,7 +42,6 @@ def bars(srs, title=""):
     # TODO
     height = srs
     time = srs.index
-    #print(bars)
 
     fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
 
@@ -51,15 +50,6 @@ def bars(srs, title=""):
     ax.set_title(title)
     ax.set_xlabel("Time [months]")
     ax.set_ylabel("Amount [€]")
-    #ax.set_xticks(ind)
-    #ax.legend()
-
-    # Create bars and choose color
-
-    # Add title and axis names
-    #plt.xlabel('categories')
-
-    # Create names on the x axis
 
     # Show graph
     plt.show()
