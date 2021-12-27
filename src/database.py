@@ -100,6 +100,40 @@ class Database():
         logger.info(f"{tag_type} '{old_tag}' substituted by '{new_tag}' in "
                 f"{changes} transactions.")
 
+
+class Notes(pd.Series):
+    """Class to save notes of budget when extraordinary transactions happen.
+
+    Inherits from pandas Series and adds a comment with a date.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Pandas series initialization with default parameters."""
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def load(cls, fpath):
+        """Constructor to create instance by loading notes data [date, note]
+
+        Args:
+            fpath (str): csv file path.
+
+        Returns:
+            Notes: instance containing loaded notes file.
+        """
+        srs = pd.read_csv(fpath, header=None, index_col=0,
+                squeeze=True, parse_dates=True)
+        return cls(srs.sort_index())
+
+    def save(self, fpath):
+        """Save Notes as .csv file.
+
+        Args:
+            fpath (str): file path.
+        """
+        self.to_csv(fpath, header=False, index=True)
+
+
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config
