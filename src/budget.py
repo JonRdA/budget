@@ -8,7 +8,7 @@ import plot
 import utils
 from report import Report
 from account import Account
-from database import Database
+from database import Database, Notes
 
 logger = logging.getLogger(__name__)
 
@@ -47,29 +47,11 @@ def acc_to_db():
 
 def test():
     """Main function to test developing code."""
-    #d = Database.load("../db/database.csv")
-    d = Database.load("../db/test_db.csv")
+    d = Database.load("../db/database.csv")
+    #d = Database.load("../db/test_db.csv")
+
     r = Report(d)
-    tdb = r.tdb
 
-    #a = r.group_cat("car")
-    t0 = datetime.datetime(2020, 10, 1)
-    t1 = datetime.datetime(2032, 12, 1)
-    ess = r.timeline("essential")
-    non = r.timeline("nonessential")
-
-    df = pd.concat([ess, non], axis=1)
-    #plot.sbars(df)
-
-    print(d.db.tail())
-
-    a = r.breakdown("car")
-    plot.pie(a.abs())
-    
-    
-
-    
-    #print(a.between(
 
 def main():
     test()

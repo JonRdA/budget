@@ -26,7 +26,7 @@ class Account(pd.DataFrame):
     def load(cls, fpath, n_account):
         """Constructor to create instance by loading transactions data.
 
-        Format: [date, description, amount, category, subcat] without header.
+        Format: [date, description, amount, category, tag] without header.
 
         Args:
             fpath (str): csv file path.

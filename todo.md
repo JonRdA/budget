@@ -4,7 +4,8 @@ Expense tracking, classification and report automation.
 # TODO
 - [x] Group loading from 2 files, cats, sups
 - [x] Build wrapper methods `timeline` & `breakdown`
-- [ ] Improve plots, pie, bar sbar
+- [ ] Improve plots, pie, bar sbar (moth centered, width auto etc.)
+- [ ] Database date, tag, cat filtering
 
 ## REPORTING
 Report has functions `timeline(dates, tags)`-> df &

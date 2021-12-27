@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#cmap = plt.get_cmap("Dark2")
+#clrs = [cmap(i) for i in range(len(srs))]
 
 def pie(srs, title=""):
     """Plot donut shaped pie chart.
@@ -11,41 +13,40 @@ def pie(srs, title=""):
     Returns:
         p (Figure): generated plot.
     """
-    if srs.min() < 0:
-        raise ValueError(f"Negative values in series {srs}")
-    # is is dataframe, check one dimension is 1, and squeezee()
-    # TODO check if values are all positive or all negative (warn & convert)
-    # TODO accept one dimensional dataframes and covert.
+    if (srs < 0).all():
+        srs = -srs
 
-    cmap = plt.get_cmap("Dark2")
-    clrs = [cmap(i) for i in range(len(srs))]
+    fig, ax = plt.subplots(figsize=[8, 10], dpi=100)
 
+    # Pie parameters, distances.
     r = .7          # circle radious
     lbld = 1.1      # label distance
     pctd = ((r + 1) / 2) * .98    # percent number distance
 
-    fig, ax = plt.subplots(figsize=[8, 10], dpi=100)
-    ax.set_title(title)
+    
     names = [i.title() for i in srs.index]
 
-    ax.pie(srs, labels=names, colors=clrs,
+    ax.pie(srs, labels=names,#colors=clrs,
             autopct="%1.0f%%", pctdistance=pctd, 
             wedgeprops={'linewidth':7, 'edgecolor':'white'},
             textprops={"fontsize": 17})
+
     hole = plt.Circle((0,0), r, color="white")
     ax.add_artist(hole)
-
+    ax.set_title(title)
     plt.show()
+
     return fig
 
-def bars(srs, title=""):
+def bar(srs, title=""):
     # TODO
     height = srs
     time = srs.index
 
     fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
 
-    ax.bar(time, height, color = (0.5,0.1,0.5,0.6), width=25)
+    #ax.bar(time, height, color = (0.5,0.1,0.5,0.6), width=25)
+    ax.bar(time, height, color = (0.5,0.1,0.5,0.6))
 
     ax.set_title(title)
     ax.set_xlabel("Time [months]")
@@ -55,7 +56,7 @@ def bars(srs, title=""):
     plt.show()
     return fig
 
-def sbars(df, title=""):
+def sbar(df, title=""):
     #stacked bars
     time = df.index
     h0 = np.zeros(len(time))

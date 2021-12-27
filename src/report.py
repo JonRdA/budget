@@ -35,7 +35,7 @@ class Report():
     
     def __repr__(self):
         """Print readable representation of Database instance."""
-        return str(self.db)
+        return str(self.tdb)
 
     def select_cat(self, cat):
         """Select category data from 'tdb', tag-database.
@@ -108,7 +108,7 @@ class Report():
 
         srs = df.sum()
         srs.name = cat
-        return srs
+        return srs[srs!=0.0]
 
 
 def correct_account(db, account, func):
