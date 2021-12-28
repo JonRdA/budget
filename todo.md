@@ -4,8 +4,9 @@ Expense tracking, classification and report automation.
 # TODO
 - [x] Group loading from 2 files, cats, sups
 - [x] Build wrapper methods `timeline` & `breakdown`
-- [ ] Improve plots, pie, bar sbar (moth centered, width auto etc.)
+- [x] Improve plots, pie, bar sbar (moth centered, width auto etc.)
 - [ ] Database date, tag, cat filtering
+- [ ] Report predefined analysis options wrapping `breakdown` & `timeline`.
 
 ## REPORTING
 Report has functions `timeline(dates, tags)`-> df &
@@ -16,8 +17,8 @@ results can be plotted with `pie` `bar` & `bars`.
 * Timeline, vertical cut of selected dates, one column.
 
 # IDEAS
-Plotting colors and bar width.
-Stacked barplot with percentages normalized `sbar`?
+Plotting colors.
+
 
 # IMPROVEMENTS
 * Database.add_account() -> only check account VS Database, it will detect 2 
