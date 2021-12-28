@@ -85,6 +85,7 @@ class Report():
         else:
             srs = self.tdb[name]
         srs.name = name     # TODO necessary??
+        srs = srs[srs!=0.0]
         
         if dates is None:
             return srs
