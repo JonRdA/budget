@@ -1,22 +1,20 @@
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
 
 #cmap = plt.get_cmap("Dark2")
 #clrs = [cmap(i) for i in range(len(srs))]
 
-def pie(srs, title=""):
+def pie(ax, srs):
     """Plot donut shaped pie chart.
 
     Args:
+        ax (AxesSubplot): axes in which to plot.
         srs (pd.Series): same sign data with labels in index.
-
-    Returns:
-        p (Figure): generated plot.
     """
     if (srs < 0).all():
         srs = -srs
-
-    fig, ax = plt.subplots(figsize=[8, 10], dpi=100)
 
     # Pie parameters, distances.
     r = .7          # circle radious
@@ -29,54 +27,52 @@ def pie(srs, title=""):
     ax.pie(srs, labels=names,#colors=clrs,
             autopct="%1.0f%%", pctdistance=pctd, 
             wedgeprops={'linewidth':7, 'edgecolor':'white'},
-            textprops={"fontsize": 17})
+            textprops={"fontsize": 12})
 
     hole = plt.Circle((0,0), r, color="white")
     ax.add_artist(hole)
-    ax.set_title(title)
-    plt.show()
 
-    return fig
+def bar(ax, srs, days=30):
+    """Bar plotting for timeline & breakdown report of transactions.
 
-def bar(srs, title=""):
-    # TODO
-    height = srs
-    time = srs.index
+    Args:
+        ax (AxesSubplot): axes in which to plot.
+        srs (pd.Series): transaction summary timeline with DatetimeIndex.
+        days (int): report resampling frequency in days for bar width.
+    """
+    x = srs.index
+    w = .8
 
-    fig, ax = plt.subplots(figsize=[12, 8], dpi=100)
+    # Correction for timeline report. Bar at beginning of freq & set width.
+    if srs.index.inferred_type=="datetime64":
+        x = x - datetime.timedelta(days)
+        w *= days
+    if (srs <= 0).all():
+        ax.invert_yaxis()
 
-    #ax.bar(time, height, color = (0.5,0.1,0.5,0.6), width=25)
-    ax.bar(time, height, color = (0.5,0.1,0.5,0.6))
+    ax.bar(x, srs, w)
 
-    ax.set_title(title)
-    ax.set_xlabel("Time [months]")
-    ax.set_ylabel("Amount [€]")
+def sbar(ax, df, days=30):
+    """Stacked bar plotting for timeline report of multiple categories.
 
-    # Show graph
-    plt.show()
-    return fig
-
-def sbar(df, title=""):
-    #stacked bars
-    time = df.index
-    h0 = np.zeros(len(time))
-
-    fig, ax = plt.subplots(figsize=[14, 8], dpi=100)
+    Args:
+        ax (AxesSubplot): axes in which to plot.
+        df (pd.DataFrame): transaction summary timeline with DatetimeIndex.
+        days (int): report resampling frequency in days for bar width.
+    """
+    x = df.index
+    w = .8 * days
+    h0 = np.zeros(len(x))
 
     for col in df:
-        ax.bar(time, df[col], bottom=h0 , width=25, label=col)
+        ax.bar(x, df[col], bottom=h0 , width=w, label=col)
         h0 += df[col]
+        
+    if (df.fillna(0) <= 0).all().all():
+        ax.invert_yaxis()
 
+    ax.legend()
 
-
-    plt.grid()
-    plt.legend()
-
-    ax.set_title(title)
-    ax.set_xlabel("Time [months]")
-    ax.set_ylabel("Amount [€]")
-
-    plt.show()
 
 if __name__ == "__main__":
     import budget
