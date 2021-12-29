@@ -1,6 +1,8 @@
 import logging
 import pandas as pd
+import matplotlib.pyplot as plt
 
+import plot
 import utils
 
 logger = logging.getLogger(__name__)
@@ -70,12 +72,14 @@ class Report():
         """Check if string `name` is a category defined in file CATS."""
         return bool(self.cats.get(name, False))
 
+# Report summary calculations
+
     def timeline(self, name, dates=None):
         """Obtain timeline of a group between dates (inclusive).
 
         Args:
             name (str): category or tag name.
-            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.datetime.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
 
         Returns:
             srs (pd.Series): group timeline with report's frequency.
@@ -96,7 +100,7 @@ class Report():
 
         Args:
             cat (str): category name.
-            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.datetime.
+            dates (tuple): (t0, t1) string "yyyy-mm-dd" or datetime.
 
         Returns:
             srs (pd.Series): sum of transactions per tag in specidied period.
@@ -111,6 +115,49 @@ class Report():
         srs.name = cat
         return srs[srs!=0.0]
 
+# Report plotting
+
+    def plot_cat(self, name, dates=None):
+        """Track category by plotting timeline and breakdown.
+
+        Args:
+            name (str): category or tag name.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
+
+        Returns:
+            fig (matplotlib Figure): graph with 2 axes.
+        """
+        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(16, 6))
+        ax1.set_position([.05, .10, .55, .80])
+        ax2.set_position([.65, .10, .30, .80])
+        tl = self.timeline(name, dates)
+        bd = self.breakdown(name, dates)
+        
+        plot.bar(ax1, tl)
+        ax1.set_title(f"{name.title()} transactions timeline")
+        ax1.set_xlabel("Time")
+        ax1.set_ylabel("Amount [€]")
+
+        plot.pie(ax2, bd)
+        ax2.set_title(f"{name.title()} transactions breakdown")
+
+        plt.show()
+
+    def plot_cat_bd(self, name, dates=None):
+
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16, 9))
+        ax.set_position([.07, .10, .90, .80])
+        df = self.select_cat(name)
+        
+        plot.sbar(ax, df)
+        ax.set_title(f"{name.title()} timeline breakdown")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Amount [€]")
+
+        plt.show()
+        
+
+# Functions out of class for initialization
 
 def correct_account(db, account, func):
     """Modify amount `db` values of `account` number based on 'func'.

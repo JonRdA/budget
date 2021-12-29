@@ -47,22 +47,17 @@ def acc_to_db():
 
 def test():
     """Main function to test developing code."""
-    #d = Database.load("../db/database.csv")
-    d = Database.load("../db/test_db.csv")
 
+    d = Database.load("../db/database.csv")
+    #d = Database.load("../db/test_db.csv")
     r = Report(d, freq="m")
-    c = r.timeline("car")
-    f = r.timeline("food")
-    p = r.timeline("personal")
-    
-
-    df = pd.concat([c,f,p], axis=1)
-
-    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(18, 8))
-    plot.sbar(ax, df)
+    cat = "event"
+    z = r.timeline(cat)
+    fig, ax = plt.subplots()
+    plot.bar(ax, z)
     plt.show()
-
-
+    r.plot_cat(cat)
+    r.plot_cat_bd(cat)
 
 def main():
     test()
