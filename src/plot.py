@@ -1,7 +1,6 @@
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
 
 #cmap = plt.get_cmap("Dark2")
 #clrs = [cmap(i) for i in range(len(srs))]
@@ -26,8 +25,7 @@ def pie(ax, srs):
 
     ax.pie(srs, labels=names,#colors=clrs,
             autopct="%1.0f%%", pctdistance=pctd, 
-            wedgeprops={'linewidth':7, 'edgecolor':'white'},
-            textprops={"fontsize": 12})
+            wedgeprops={'linewidth':7, 'edgecolor':'white'})
 
     hole = plt.Circle((0,0), r, color="white")
     ax.add_artist(hole)
@@ -60,7 +58,9 @@ def sbar(ax, df, days=30):
         df (pd.DataFrame): transaction summary timeline with DatetimeIndex.
         days (int): report resampling frequency in days for bar width.
     """
-    x = df.index
+    df = df.fillna(0)
+    print(df)
+    x = df.index - datetime.timedelta(days)
     w = .8 * days
     h0 = np.zeros(len(x))
 
@@ -68,7 +68,7 @@ def sbar(ax, df, days=30):
         ax.bar(x, df[col], bottom=h0 , width=w, label=col)
         h0 += df[col]
         
-    if (df.fillna(0) <= 0).all().all():
+    if (df <= 0).all().all():
         ax.invert_yaxis()
 
     ax.legend()
