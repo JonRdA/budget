@@ -6,7 +6,8 @@ Expense tracking, classification and report automation.
 - [x] Build wrapper methods `timeline` & `breakdown`
 - [x] Improve plots, pie, bar sbar (moth centered, width auto etc.)
 - [x] Database date, tag, cat filtering
-- [ ] Report predefined analysis options wrapping `breakdown` & `timeline`.
+- [x] Report predefined analysis options wrapping `breakdown` & `timeline`.
+- [ ] Use plot init for automatic plotting.
 
 ## REPORTING
 Report has functions `timeline(dates, tags)`-> df &
@@ -18,7 +19,6 @@ results can be plotted with `pie` `bar` & `bars`.
 
 # IDEAS
 Plotting colors.
-
 
 # IMPROVEMENTS
 * Database.add_account() -> only check account VS Database, it will detect 2 

@@ -115,13 +115,13 @@ class Report():
         srs.name = cat
         return srs[srs!=0.0]
 
-# Report plotting
+# Result plotting
 
-    def plot_cat(self, name, dates=None):
+    def plot_cat(self, cat, dates=None):
         """Track category by plotting timeline and breakdown.
 
         Args:
-            name (str): category or tag name.
+            cat (str): category or tag name.
             dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
 
         Returns:

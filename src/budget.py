@@ -51,13 +51,10 @@ def test():
     d = Database.load("../db/database.csv")
     #d = Database.load("../db/test_db.csv")
     r = Report(d, freq="m")
-    cat = "event"
-    z = r.timeline(cat)
-    fig, ax = plt.subplots()
-    plot.bar(ax, z)
+    print(d.filter("event"))
+    ax = plot.init()
+    plot.bar(ax, r.timeline("event"))
     plt.show()
-    r.plot_cat(cat)
-    r.plot_cat_bd(cat)
 
 def main():
     test()

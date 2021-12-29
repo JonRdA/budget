@@ -4,6 +4,17 @@ import matplotlib.pyplot as plt
 
 #cmap = plt.get_cmap("Dark2")
 #clrs = [cmap(i) for i in range(len(srs))]
+def init(fs=(16, 9)):
+    """Initialize figure for fast plotting.
+
+    Args:
+        fs (tuple): figure size.
+
+    Returns:
+        ax (matplotlib.Axes)
+    """
+    fig, axes = plt.subplots(figsize=fs)
+    return axes
 
 def pie(ax, srs):
     """Plot donut shaped pie chart.
