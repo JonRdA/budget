@@ -5,7 +5,7 @@ Expense tracking, classification and report automation.
 - [x] Group loading from 2 files, cats, sups
 - [x] Build wrapper methods `timeline` & `breakdown`
 - [x] Improve plots, pie, bar sbar (moth centered, width auto etc.)
-- [ ] Database date, tag, cat filtering
+- [x] Database date, tag, cat filtering
 - [ ] Report predefined analysis options wrapping `breakdown` & `timeline`.
 
 ## REPORTING

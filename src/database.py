@@ -100,6 +100,25 @@ class Database():
         logger.info(f"{tag_type} '{old_tag}' substituted by '{new_tag}' in "
                 f"{changes} transactions.")
 
+    def filter(self, name, dates=None):
+        """Filter transactions based on tag or dates.
+
+        Args:
+            name (str): category or tag name.
+            dates (tuple): (t0, t1) string "yyyy-mm-dd" or datetime.
+
+        Returns:
+            df (pd.DataFrame): filtered database subset.
+        """
+        df = self.db
+        flt = (df["tag"] == name) | (df["cat"] == name)
+        df = df[flt]
+
+        if dates is not None:
+            flt_dt = df["date"].between(dates[0], dates[1])
+            return df.loc[flt_dt]
+        return df
+
 
 class Notes(pd.Series):
     """Class to save notes of budget when extraordinary transactions happen.
