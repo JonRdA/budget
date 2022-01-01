@@ -4,19 +4,25 @@ import matplotlib.pyplot as plt
 
 #cmap = plt.get_cmap("Dark2")
 #clrs = [cmap(i) for i in range(len(srs))]
-def init(fs=(16, 9)):
-    """Initialize figure for fast plotting.
 
-    Args:
-        fs (tuple): figure size.
+def initax(func):
+    """Decorator for plot drawing functions to initialize an asex if not passed.
 
-    Returns:
-        ax (matplotlib.Axes)
+    Checks if an axes is passes as a keyword argument. If not it creates ones
+    and passes it to the function to plot on it.
     """
-    fig, axes = plt.subplots(figsize=fs)
-    return axes
+    def wrapper(*args, **kwargs):
+        if "ax" not in kwargs.keys():
+            _, ax = plt.subplots(figsize=(16, 9))
+            return func(*args, ax, **kwargs)
+        else:
+            return func(*args, **kwargs)
+    return wrapper
+            
 
-def pie(ax, srs):
+
+@initax
+def pie(srs, ax=None):
     """Plot donut shaped pie chart.
 
     Args:
@@ -41,7 +47,8 @@ def pie(ax, srs):
     hole = plt.Circle((0,0), r, color="white")
     ax.add_artist(hole)
 
-def bar(ax, srs, days=30):
+@initax
+def bar(srs, ax=None, days=30):
     """Bar plotting for timeline & breakdown report of transactions.
 
     Args:
@@ -61,7 +68,8 @@ def bar(ax, srs, days=30):
 
     ax.bar(x, srs, w)
 
-def sbar(ax, df, days=30):
+@initax
+def sbar(df, ax=None,  days=30):
     """Stacked bar plotting for timeline report of multiple categories.
 
     Args:
@@ -70,7 +78,6 @@ def sbar(ax, df, days=30):
         days (int): report resampling frequency in days for bar width.
     """
     df = df.fillna(0)
-    print(df)
     x = df.index - datetime.timedelta(days)
     w = .8 * days
     h0 = np.zeros(len(x))

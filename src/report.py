@@ -123,38 +123,43 @@ class Report():
         Args:
             cat (str): category or tag name.
             dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
-
-        Returns:
-            fig (matplotlib Figure): graph with 2 axes.
         """
-        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(16, 6))
+        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(20, 9))
         ax1.set_position([.05, .10, .55, .80])
         ax2.set_position([.65, .10, .30, .80])
-        tl = self.timeline(name, dates)
-        bd = self.breakdown(name, dates)
+        tl = self.timeline(cat, dates)
+        bd = self.breakdown(cat, dates)
         
-        plot.bar(ax1, tl)
-        ax1.set_title(f"{name.title()} transactions timeline")
+        plot.bar(tl, ax=ax1)
+        ax1.set_title(f"{cat.title()} transactions timeline")
         ax1.set_xlabel("Time")
         ax1.set_ylabel("Amount [€]")
 
-        plot.pie(ax2, bd)
-        ax2.set_title(f"{name.title()} transactions breakdown")
+        plot.pie(bd, ax=ax2)
+        ax2.set_title(f"{cat.title()} transactions breakdown")
 
-        plt.show()
+        print(tl, bd, sep=2 * "\n")
 
     def plot_cat_bd(self, name, dates=None):
+        """Track category by plotting stacked bar breakdown plot.
+
+        Args:
+            cat (str): category or tag name.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
+        """
 
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16, 9))
         ax.set_position([.07, .10, .90, .80])
         df = self.select_cat(name)
+        df.dropna(axis=1, how="all", inplace=True)
         
-        plot.sbar(ax, df)
+        plot.sbar(df, ax=ax)
         ax.set_title(f"{name.title()} timeline breakdown")
         ax.set_xlabel("Time")
         ax.set_ylabel("Amount [€]")
 
-        plt.show()
+        print(df)
+
         
 
 # Functions out of class for initialization

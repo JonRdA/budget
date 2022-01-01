@@ -51,9 +51,14 @@ def test():
     d = Database.load("../db/database.csv")
     #d = Database.load("../db/test_db.csv")
     r = Report(d, freq="m")
-    print(d.filter("event"))
-    ax = plot.init()
-    plot.bar(ax, r.timeline("event"))
+
+    t0 = datetime.datetime(2021, 9, 1)
+    t1 = datetime.datetime(2022,2,1)
+
+    r.plot_cat("car")
+    r.plot_cat_bd("car")
+    e = r.timeline("car")
+    plot.bar(e)
     plt.show()
 
 def main():
