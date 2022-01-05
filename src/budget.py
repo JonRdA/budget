@@ -32,7 +32,7 @@ def auto_tag(csv_path, csv_save_path=None, json_path=AUTOTAG):
     acc.modify_tags(utils.assign_tags, d=tag_dict)
     acc.save(csv_save_path)
 
-    flp = int((len(acc) - acc["cat"].isna().sum()) / len(acc) * 100)
+    flp = int((len(acc) - acc["tag"].isna().sum()) / len(acc) * 100)
     logger.info(f"{flp} % of cats were filled on file {csv_save_path}.")
 
 def acc_to_db():
@@ -49,20 +49,22 @@ def test():
     """Main function to test developing code."""
     d = Database.load("../db/database.csv")
     #d = Database.load("../db/test_db.csv")
+
     r = Report(d, freq="m")
 
     t0 = datetime.datetime(2019, 9, 1)
     t1 = datetime.datetime(2022,2,1)
 
-    r.plot_cat_bd("house")
+    cat = "vacation"
+    r.plot_cat_bd(cat)
+    r.plot_cat(cat)
     plt.show()
 
 def main():
-    test()
-
     #acc_to_db()
     #auto_tag("../input/auto_tag.csv")
 
+    test()
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config
