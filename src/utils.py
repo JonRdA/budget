@@ -53,7 +53,7 @@ def cast_category(df):
     df[CAT_COLS] = df[CAT_COLS].astype("category")
 
 def assign_tags(row, d):
-    """Modify row cat & sub using description if found in dict d mapping.
+    """Modify row tag using description if found in dict d mapping.
 
     Args:
         row (pd.Series): Account or Database row.
@@ -62,10 +62,10 @@ def assign_tags(row, d):
     Returns:
         nr (pd.Series): new row modified with cat & sub set, same row otherwise.
     """
-    for k, (c, s) in d.items():
+    for k, v in d.items():
         if re.search(k, row["description"], re.IGNORECASE):
-            return pd.Series([c, s], index=["cat", "sub"])
-    return pd.Series(index=["cat", "sub"])
+            return pd.Series([v], index=["tag"])
+    return pd.Series(index=["tag"])
 
 def load_json(fpath):
     """Load json dictionary from file path location
