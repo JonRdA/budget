@@ -78,7 +78,7 @@ class Database():
         utils.cast_category(df)
         self.db = df
 
-    def filter(self, name, dates=None):
+    def filter(self, name=None, dates=None):
         """Filter transactions based on tag or dates.
 
         Args:
@@ -89,7 +89,8 @@ class Database():
             df (pd.DataFrame): filtered database subset.
         """
         df = self.db
-        df = df[df["tag"] == name]
+        if name is not None:
+            df = df[df["tag"] == name]
 
         if dates is not None:
             flt_dt = df["date"].between(dates[0], dates[1])

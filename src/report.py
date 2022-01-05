@@ -159,7 +159,6 @@ class Report():
         ax.set_ylabel("Amount [€]")
 
         print(df)
-
         
 
 # Functions out of class for initialization

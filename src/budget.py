@@ -52,12 +52,12 @@ def test():
 
     r = Report(d, freq="m")
 
-    t0 = datetime.datetime(2019, 9, 1)
-    t1 = datetime.datetime(2022,2,1)
+    t0 = datetime.datetime(2021, 1, 1)
+    t1 = datetime.datetime(2021,2,1)
 
-    cat = "vacation"
-    r.plot_cat_bd(cat)
-    r.plot_cat(cat)
+    cat = "essential"
+    #r.plot_cat_bd(cat)
+    #r.plot_cat(cat)
     plt.show()
 
 def main():
@@ -65,6 +65,7 @@ def main():
     #auto_tag("../input/auto_tag.csv")
 
     test()
+
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config
