@@ -4,8 +4,6 @@ import logging
 import datetime
 import pandas as pd
 
-CAT_COLS = ["cat", "tag", "account"]      # Category dtype
-
 logger = logging.getLogger(__name__)
 
 def find_duplicates(df_0, df_1):
@@ -50,7 +48,7 @@ def cast_category(df):
     Args:
         df (pd.DataFrame): transaction database.
     """
-    df[CAT_COLS] = df[CAT_COLS].astype("category")
+    df[["tag", "account"]] = df[["tag", "account"]].astype("category")
 
 def assign_tags(row, d):
     """Modify row tag using description if found in dict d mapping.
