@@ -36,7 +36,7 @@ class Account(pd.DataFrame):
             Account: instance containing loaded transaction file.
         """
         dt_parser = lambda x : pd.to_datetime(x, format="%d/%m/%Y")
-        cname = ["date", "description", "amount", "cat", "tag"]
+        cname = ["date", "description", "amount", "tag"]
         ctype = {"description": "string"}
 
         df = pd.read_csv(fpath, header=None, names=cname, dtype=ctype,
@@ -49,17 +49,14 @@ class Account(pd.DataFrame):
         return cls(df)
         
     def modify_tags(self, func, *args, **kwargs):
-        """Modify inplace category and sub-category using passed function.
+        """Modify inplace tag using passed function.
 
         Args:
             func (function): modifying function to be applied.
-
-        Returns:
-            None
         """
-        if not self.loc[:, ["cat", "tag"]].isna().all().all():
+        if not self.loc[:, "tag"].isna().all().all():
             logger.warning("Overwriting non-empyt categories")
-        self[["cat", "tag"]] = self.apply(func, axis=1, *args, **kwargs)
+        self["tag"] = self.apply(func, axis=1, *args, **kwargs)
 
     def save(self, fpath):
         """Save account as .csv file.
