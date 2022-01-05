@@ -9,7 +9,7 @@ class Account(pd.DataFrame):
     """Partial transaction database with one account information.
 
     Inherited from pandas dataframe contains all transactions sorted by date
-    as well as their amount, category, subcategory and account.
+    as well as their amount, tag and account.
     """
     
     def __init__(self, *args, **kwargs):
@@ -64,7 +64,7 @@ class Account(pd.DataFrame):
         Args:
             fpath (str): file path.
         """
-        cols = ["date", "description", "amount", "cat", "tag"]
+        cols = ["date", "description", "amount", "tag"]
         self.to_csv(fpath, header=False, index=False, float_format="%.2f",
             date_format="%d/%m/%Y", columns=cols)
 
