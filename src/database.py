@@ -36,8 +36,7 @@ class Database():
             Database: instance containing loaded transaction history.
         """
         dt_parser = lambda x : pd.to_datetime(x, format="%Y-%m-%d")
-        col_types = {"description": "string", "cat": "category",
-                     "tag": "category", "account": int}
+        col_types = {"description": "string", "tag": "category", "account": int}
 
         df = pd.read_csv(fpath, header=0, dtype=col_types,
             parse_dates=[0], date_parser=dt_parser)
@@ -52,7 +51,7 @@ class Database():
         Args:
             fpath (str): file path.
         """
-        cols = ["date", "description", "amount", "account", "cat", "tag"]
+        cols = ["date", "description", "amount", "account", "tag"]
         self.db.to_csv(fpath, header=True, index=False, float_format="%.2f",
             columns=cols)
 
@@ -79,27 +78,6 @@ class Database():
         utils.cast_category(df)
         self.db = df
 
-    def edit_tag(self, tag_type, old_tag, new_tag):
-        """Edit category or subcategory tag on database.
-
-        Args:
-            tag_type (str): ['cat', 'sub'] which tag type to be edited.
-            old_tag (str): current used tag name.
-            new_tag (str): new tag name to substitute old one.
-        """
-        cats = self.db[tag_type].cat.categories
-        if old_tag not in cats:
-            raise ValueError(f"old {tag_type} '{old_tag}' not in database.")
-        elif new_tag in cats:
-            raise ValueError(f"new {tag_type} '{new_tag}' already in database.")
-
-        self.db[tag_type] = self.db[tag_type].cat.rename_categories(
-                {old_tag: new_tag})
-
-        changes = self.db[tag_type].value_counts()[new_tag]
-        logger.info(f"{tag_type} '{old_tag}' substituted by '{new_tag}' in "
-                f"{changes} transactions.")
-
     def filter(self, name, dates=None):
         """Filter transactions based on tag or dates.
 
@@ -111,8 +89,7 @@ class Database():
             df (pd.DataFrame): filtered database subset.
         """
         df = self.db
-        flt = (df["tag"] == name) | (df["cat"] == name)
-        df = df[flt]
+        df = df[df["tag"] == name]
 
         if dates is not None:
             flt_dt = df["date"].between(dates[0], dates[1])
