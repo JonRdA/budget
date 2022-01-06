@@ -2,7 +2,7 @@
 Expense tracking, classification and report automation.
 
 # TODO
-- [ ] Database filtering based on cats
+- [x] Database filtering based on cats
 - [x] Group loading from 2 files, cats, sups
 - [x] Build wrapper methods `timeline` & `breakdown`
 - [x] Improve plots, pie, bar sbar (moth centered, width auto etc.)

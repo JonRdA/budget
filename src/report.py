@@ -88,8 +88,8 @@ class Report():
             srs = self.select_cat(name).sum(axis=1)
         else:
             srs = self.tdb[name]
-        srs.name = name     # TODO necessary??
-        srs = srs[srs!=0.0]
+        #srs.name = name     # TODO necessary??
+        srs = srs[srs!=0.0].dropna()
         
         if dates is None:
             return srs
@@ -113,7 +113,7 @@ class Report():
 
         srs = df.sum()
         srs.name = cat
-        return srs[srs!=0.0]
+        return srs[srs!=0.0].dropna()
 
 # Result plotting
 

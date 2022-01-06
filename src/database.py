@@ -78,24 +78,50 @@ class Database():
         utils.cast_category(df)
         self.db = df
 
-    def filter(self, name=None, dates=None):
+    def filter(self, name=None, dates=None, cats=None):
         """Filter transactions based on tag or dates.
 
         Args:
             name (str): category or tag name.
             dates (tuple): (t0, t1) string "yyyy-mm-dd" or datetime.
+            cats (dict): dictionary of category definitions.
 
         Returns:
             df (pd.DataFrame): filtered database subset.
         """
         df = self.db
         if name is not None:
-            df = df[df["tag"] == name]
+            if cats is None:
+                cats = []
+            f = self.flt(name, cats)
+            df = df[f]
 
         if dates is not None:
-            flt_dt = df["date"].between(dates[0], dates[1])
-            return df.loc[flt_dt]
+            f_dt = df["date"].between(dates[0], dates[1])
+            df =  df.loc[f_dt]
+
         return df
+
+    def flt(self, name, cats):
+        """Inner function to create selection filter for tags & categories.
+
+        Args:
+            name (str): name of the category or tag.
+            cats (dict): dictionary of category definitions.
+
+        Returns:
+            f(pd.Series): boolean index to select on database.
+        """
+        tag_srs = self.db["tag"]
+        if name not in cats:
+            f = tag_srs == name
+            return f
+
+        fs = pd.DataFrame(index=tag_srs.index)
+        for tag in cats[name]:
+            fs["new"] = self.flt(tag, cats)
+            fs["flt"] = fs.any(axis=1)
+        return fs["flt"]
 
 
 class Notes(pd.Series):
