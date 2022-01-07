@@ -1,6 +1,7 @@
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 #cmap = plt.get_cmap("Dark2")
 #clrs = [cmap(i) for i in range(len(srs))]
@@ -18,8 +19,6 @@ def initax(func):
         else:
             return func(*args, **kwargs)
     return wrapper
-            
-
 
 @initax
 def pie(srs, ax=None):
@@ -67,6 +66,7 @@ def bar(srs, ax=None, days=30):
         ax.invert_yaxis()
 
     ax.bar(x, srs, w)
+    return ax
 
 @initax
 def sbar(df, ax=None,  days=30):
@@ -90,7 +90,36 @@ def sbar(df, ax=None,  days=30):
         ax.invert_yaxis()
 
     ax.legend()
+    return ax
 
+@initax
+def gbar(df, ax=None,  days=30):
+    """Grouped bar plotting for timeline report of multiple categories.
+
+    Args:
+        ax (AxesSubplot): axes in which to plot.
+        df (pd.DataFrame): transaction summary timeline with DatetimeIndex.
+        days (int): report resampling frequency in days for bar width.
+    """
+    df = df.fillna(0)
+    ncol = df.shape[1] + 1
+    x = df.index - datetime.timedelta(days)
+    w = .8 * days/ncol
+
+    for col in df:
+        y = df[col]
+        if (y <= 0).all():
+            y = -y
+            col = col + " [-]"
+
+        ax.bar(x, y, width=w, label=col)
+        x = x + datetime.timedelta(days/ncol)
+
+    xfmt = mdates.DateFormatter("%Y-%m")
+    ax.xaxis.set_major_formatter(xfmt)
+    ax.set_xticks(df.index + datetime.timedelta(days/ncol * (ncol-2)/2 - days))
+    ax.legend()
+    return ax
 
 if __name__ == "__main__":
     import budget
