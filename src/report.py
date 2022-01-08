@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -88,12 +89,32 @@ class Report():
             srs = self.select_cat(name).sum(axis=1)
         else:
             srs = self.tdb[name]
-        #srs.name = name     # TODO necessary??
+        srs.name = name
         srs = srs[srs!=0.0].dropna()
         
         if dates is None:
             return srs
         return srs[dates[0]: dates[1]]
+
+    def timelines(self, cat, dates=None):
+        """Obtain timeline of a category between dates (inclusive).
+
+        Returns the lower levels (inmediate subcategory) tag or cat's timeline.
+
+        Args:
+            cat (str): category name.
+            dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
+
+        Returns:
+            df (pd.DataFrame): category's component's timeline.
+        """
+        df = self.select_cat(cat)
+        df.replace({0.0:np.nan}, inplace=True)
+        df.dropna(axis=0, how="all", inplace=True)
+
+        if dates is None:
+            return df
+        return df[dates[0]: dates[1]]
 
     def breakdown(self, cat, dates=None):
         """Break down category into tags or subcats between `dates`(inclusive).
@@ -150,8 +171,7 @@ class Report():
 
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16, 9))
         ax.set_position([.07, .10, .90, .80])
-        df = self.select_cat(name)
-        df.dropna(axis=1, how="all", inplace=True)
+        df = self.timelines(name, dates)
         
         plot.sbar(df, ax=ax)
         ax.set_title(f"{name.title()} timeline breakdown")
