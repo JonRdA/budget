@@ -15,6 +15,7 @@ def initax(func):
     def wrapper(*args, **kwargs):
         if "ax" not in kwargs.keys():
             _, ax = plt.subplots(figsize=(16, 9))
+            ax.set_position([.07, .10, .90, .80])
             return func(*args, ax, **kwargs)
         else:
             return func(*args, **kwargs)

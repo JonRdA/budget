@@ -53,16 +53,21 @@ def test():
 
     r = Report(d, freq="m")
 
-    t0 = datetime.datetime(2021,7,1)
-    t1 = datetime.datetime(2021,8,1)
+    t0 = datetime.datetime(2021,9,1)
+    t1 = datetime.datetime(2022,2,1)
 
-    cat = "nonessential"
-    ciccp = r.timeline(cat)
-    print(ciccp, ciccp.sum())
-    plot.bar(r.timeline(cat))
 
-    a = d.filter("nonessential", dates=(t0, t1), cats=r.cats)
-    print(a)
+    inc = r.timeline("income", dates=(t0, t1))
+    exp= r.timeline("expenses", dates=(t0, t1))
+    df = pd.concat([inc, exp], axis=1)
+    #plot.gbar(df)
+
+    #r.plot_cat_bd("car", dates=(t0, t1))
+    r.plot_cat_bd("expenses", dates=(t0, t1))
+    r.plot_cat_bd("essential", dates=(t0, t1))
+    r.plot_cat_bd("nonessential", dates=(t0, t1))
+    r.plot_cat_bd("leisure", dates=(t0, t1))
+    r.plot_cat_bd("personal", dates=(t0, t1))
 
     plt.show()
 

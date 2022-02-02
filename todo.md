@@ -2,6 +2,9 @@
 Expense tracking, classification and report automation.
 
 # TODO
+- [ ] Modify expenses as full subcat
+- [ ] Rethink fund categories
+- [ ] Design fund breakdown
 - [x] Database filtering based on cats
 - [x] Group loading from 2 files, cats, sups
 - [x] Build wrapper methods `timeline` & `breakdown`
