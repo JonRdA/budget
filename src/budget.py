@@ -39,9 +39,13 @@ def acc_to_db():
     """Accounts to database. Load account info, merge and save database."""
     a1 = Account.load("../input/account_01.csv", 1)
     a2 = Account.load("../input/account_02.csv", 2)
+    a3 = Account.load("../input/account_03.csv", 3)
+    a4 = Account.load("../input/account_04.csv", 4)
     
     d = Database(a1)
     d.add_account(a2)
+    d.add_account(a3)
+    d.add_account(a4)
 
     d.save("../db/database.csv")
 
@@ -54,7 +58,7 @@ def test():
     r = Report(d, freq="m")
 
     t0 = datetime.datetime(2021,9,1)
-    t1 = datetime.datetime(2022,2,1)
+    t1 = datetime.datetime(2022,5,1)
 
 
     inc = r.timeline("income", dates=(t0, t1))
@@ -62,17 +66,25 @@ def test():
     df = pd.concat([inc, exp], axis=1)
     #plot.gbar(df)
 
-    #r.plot_cat_bd("car", dates=(t0, t1))
-    r.plot_cat_bd("expenses", dates=(t0, t1))
-    r.plot_cat_bd("essential", dates=(t0, t1))
-    r.plot_cat_bd("nonessential", dates=(t0, t1))
-    r.plot_cat_bd("leisure", dates=(t0, t1))
-    r.plot_cat_bd("personal", dates=(t0, t1))
+    ##r.cplot_cat_bd("car", dates=(t0, t1))
+    #r.cplot_cat_bd("expenses", dates=(t0, t1))
+    #r.cplot_cat_bd("essential", dates=(t0, t1))
+    #r.cplot_cat_bd("nonessential", dates=(t0, t1))
+    #r.cplot_cat_bd("leisure", dates=(t0, t1))
+    #r.cplot_cat_bd("personal", dates=(t0, t1))
+
+    r4= r.timeline("r4")
+    print(r4)
+    print(r4.sum())
+
+    funds = r.timeline("funds", dates=(t0, t1))
+    print(funds)
+    print(funds.sum() + 453.28)
 
     plt.show()
 
 def main():
-    #acc_to_db()
+    acc_to_db()
     #auto_tag("../input/auto_tag.csv")
 
     test()

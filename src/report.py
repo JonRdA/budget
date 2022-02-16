@@ -31,6 +31,7 @@ class Report():
         """
         # Modify account #2 values in half, shared account.
         mdb = correct_account(database.db, 2, lambda x: x/2)
+        mdb = correct_account(database.db, 4, lambda x: x/3)
 
         self.cats = utils.load_json(cat_file)
         self.tdb = group_tags(mdb, freq)
