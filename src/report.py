@@ -30,8 +30,8 @@ class Report():
             sups_file (str): path to supercategory definition JSON file.
         """
         # Modify account #2 values in half, shared account.
-        mdb = correct_account(database.db, 2, lambda x: x/2)
-        mdb = correct_account(database.db, 4, lambda x: x/3)
+        mdb = utils.correct_account(database.db, 2, lambda x: x/2)
+        mdb = utils.correct_account(mdb, 4, lambda x: x/3)
 
         self.cats = utils.load_json(cat_file)
         self.tdb = group_tags(mdb, freq)
@@ -180,27 +180,9 @@ class Report():
         ax.set_ylabel("Amount [€]")
 
         print(df)
-        
 
 # Functions out of class for initialization
 
-def correct_account(db, account, func):
-    """Modify amount `db` values of `account` number based on 'func'.
-
-    Args:
-        db (pd.DataFrame): Database object's db attribute.
-        account (int): number of account to modify.
-        func (function): modification to perform.
-
-    Returns:
-        mdb (pd.DataFrame): modified database.
-    """
-    mdb = db.copy()
-    filt = mdb["account"] == account
-    mdb.loc[filt, "amount"]= mdb["amount"][filt].apply(func)
-    logger.warning(f"Account {account} values modified.")
-    return mdb
-    
 def group_tags(db, freq):
     """Group database `db` by tag & resample with frequency `freq`.
 

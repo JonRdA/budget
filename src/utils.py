@@ -98,6 +98,23 @@ def fit_dates(dt_index, t0, t1):
         t1 = dt_index.index[-1]
     return t0, t1
 
+def correct_account(db, account, func):
+    """Modify amount `db` values of `account` number based on 'func'.
+
+    Args:
+        db (pd.DataFrame): Database object's db attribute.
+        account (int): number of account to modify.
+        func (function): modification to perform.
+
+    Returns:
+        mdb (pd.DataFrame): modified database.
+    """
+    mdb = db.copy()
+    filt = mdb["account"] == account
+    mdb.loc[filt, "amount"]= mdb["amount"][filt].apply(func)
+    logger.warning(f"Account {account} values modified.")
+    return mdb
+    
 if __name__ == "__main__":
     # If module directly run, load log configuration for all modules.
     import logging.config

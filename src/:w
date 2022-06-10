@@ -49,38 +49,16 @@ def acc_to_db():
 
     d.save("../db/database.csv")
 
-def export_modified_transactions(db, tag, dates, export_path):
-    """Export filtered transactions from tag but modified (account 2 / 2).
-
-    Current modification are:
-        account 2 values divided by 2
-        account 4 values divided by 3
-
-    Args:
-        db (database): db from which to select and modify.
-        tag (str): tag to filter from database.
-        dates (tuple): (t0, t1) str:"yyyy-mm-dd" or datetime.
-        export_path (str).
-
-    Returns
-        pd.DataFrame: filtered and modified transactions.
-    """
-    r = Report(db, freq="m")
-    mdb = utils.correct_account(db.db, 2, lambda x: x/2)
-    mdb = utils.correct_account(mdb, 4, lambda x: x/3)
-    mdb = Database(mdb)
-    filtered = mdb.filter(tag, dates, cats=r.cats)
-    filtered.to_csv(export_path)
-
 def test():
     """Main function to test developing code."""
 
     d = Database.load("../db/database.csv")
     #d = Database.load("../db/test_db.csv")
 
-    export_modified_transactions(d, "vacation", ("2021-04-01", "2022-08-01"), "../input/vacation2.csv")
-
     r = Report(d, freq="m")
+    f = d.filter("vacation", dates=("2021-07-01", "2022-08-01"), cats=r.cats)
+    print(f)
+    f.to_csv("../input/vacation.csv")
     return
 
     t0 = datetime.datetime(2021,9,1)
