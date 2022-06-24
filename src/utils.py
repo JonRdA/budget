@@ -29,7 +29,7 @@ def find_duplicates(df_0, df_1):
     finally:
         if df_0.empty:
             # Database had no transactions of account number.
-            return pd.Series()
+            return pd.Series(dtype="float64")
 
     if dt_1 <= dt_0:
         filt_0 = df_0["date"].between(dt_1, dt_0)

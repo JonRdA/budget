@@ -76,39 +76,42 @@ def test():
     """Main function to test developing code."""
 
     d = Database.load("../db/database.csv")
-    #d = Database.load("../db/test_db.csv")
-
-    export_modified_transactions(d, "vacation", ("2021-04-01", "2022-08-01"), "../input/vacation2.csv")
 
     r = Report(d, freq="m")
-    return
+
+    #export_modified_transactions(d, "vacation", ("2021-04-01", "2022-08-01"), "../input/vacation2.csv")
+    #f = d.filter("present", cats=r.cats)
 
     t0 = datetime.datetime(2021,9,1)
     t1 = datetime.datetime(2022,9,1)
+    t0 = datetime.datetime(2022,4,1)
+    t1 = datetime.datetime(2022,9,1)
+
+    f = d.filter("present", cats=r.cats)
+    print(f)
+    return
 
 
-    inc = r.timeline("income", dates=(t0, t1))
-    exp= r.timeline("expenses", dates=(t0, t1))
-    df = pd.concat([inc, exp], axis=1)
+    #inc = r.timeline("income", dates=(t0, t1))
+    #exp= r.timeline("expenses", dates=(t0, t1))
+    #df = pd.concat([inc, exp], axis=1)
     #plot.gbar(df)
 
-    #r.plot_cat_bd("food", dates=(t0, t1))
-    #r.plot_cat_bd("car", dates=(t0, t1))
-    #r.plot_cat_bd("expenses", dates=(t0, t1))
-    #r.plot_cat_bd("essential", dates=(t0, t1))
-    #r.plot_cat_bd("vacation", dates=(t0, t1))
-    #r.plot_cat_bd("nonessential", dates=(t0, t1))
-    #r.plot_cat_bd("leisure", dates=(t0, t1))
-    #r.plot_cat_bd("personal", dates=(t0, t1))
+    r.plot_cat_bd("food", dates=(t0, t1))
+    r.plot_cat_bd("buy", dates=(t0, t1))
+    r.plot_cat_bd("car", dates=(t0, t1))
+    r.plot_cat_bd("expenses", dates=(t0, t1))
+    r.plot_cat_bd("essential", dates=(t0, t1))
+    r.plot_cat_bd("vacation", dates=(t0, t1))
+    r.plot_cat_bd("nonessential", dates=(t0, t1))
+    r.plot_cat_bd("leisure", dates=(t0, t1))
+    r.plot_cat_bd("personal", dates=(t0, t1))
     #r.plot_cat_bd("balance", dates=(t0, t1))       # no good graph, caution
-    #r.plot_cat_bd("income", dates=(t0, t1))
-
-
-
+    r.plot_cat_bd("income", dates=(t0, t1))
     plt.show()
 
 def main():
-    #acc_to_db()
+    acc_to_db()
     #auto_tag("../input/auto_tag.csv")
 
     test()

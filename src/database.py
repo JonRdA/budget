@@ -73,7 +73,8 @@ class Database():
             logger.warning(f"Adding duplicate transactions:\n{df_1[dup_index]}")
 
         logger.debug(f"Account {df_1.shape} added to Database {df_0.shape}.")
-        df = df_0.append(df_1, ignore_index=True)
+        #df = df_0.append(df_1, ignore_index=True)      deprecated
+        df = pd.concat([df_0, df_1], ignore_index=True)
         df.sort_values(by=["date", "amount"], ignore_index=True, inplace=True)
         utils.cast_category(df)
         self.db = df
