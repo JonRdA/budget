@@ -83,13 +83,14 @@ def test():
     #f = d.filter("present", cats=r.cats)
 
     t0 = datetime.datetime(2021,9,1)
-    t1 = datetime.datetime(2022,9,1)
-    t0 = datetime.datetime(2022,4,1)
-    t1 = datetime.datetime(2022,9,1)
+    t1 = datetime.datetime(2022,12,1)
 
-    f = d.filter("present", cats=r.cats)
-    print(f)
-    return
+    #t0 = datetime.datetime(2022,7,1)
+    #t1 = datetime.datetime(2022,10,1)
+    #f = d.filter("vacation", cats=r.cats, dates=(t0, t1))
+    #print(f)
+    #print(f["amount"].sum())
+    #return 8
 
 
     #inc = r.timeline("income", dates=(t0, t1))
@@ -111,7 +112,7 @@ def test():
     plt.show()
 
 def main():
-    acc_to_db()
+    #acc_to_db()
     #auto_tag("../input/auto_tag.csv")
 
     test()

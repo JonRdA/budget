@@ -194,7 +194,7 @@ def group_tags(db, freq):
         tdb (pd.DataFrame): tag-database.
     """
     gpr = pd.Grouper(key="date", freq=freq, closed="left")
-    tdb = db.groupby([gpr, "tag"], observed=True).sum()
+    tdb = db.groupby([gpr, "tag"], observed=True).sum(numeric_only=True)
 
     # Pass grouped & resampled tags to dataframe format.
     tdb = tdb.unstack(level=-1)
