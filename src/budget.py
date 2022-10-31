@@ -85,11 +85,11 @@ def test():
     t0 = datetime.datetime(2021,9,1)
     t1 = datetime.datetime(2022,12,1)
 
-    #t0 = datetime.datetime(2022,7,1)
-    #t1 = datetime.datetime(2022,10,1)
-    #f = d.filter("vacation", cats=r.cats, dates=(t0, t1))
+#    t0 = datetime.datetime(2022,3,1)
+    #t1 = datetime.datetime(2022,12,1)
+    #f = d.filter("r4", cats=r.cats, dates=(t0, t1))
     #print(f)
-    #print(f["amount"].sum())
+    #print(f.sum(numeric_only=True))
     #return 8
 
 
@@ -102,13 +102,13 @@ def test():
     r.plot_cat_bd("buy", dates=(t0, t1))
     r.plot_cat_bd("car", dates=(t0, t1))
     r.plot_cat_bd("expenses", dates=(t0, t1))
-    r.plot_cat_bd("essential", dates=(t0, t1))
-    r.plot_cat_bd("vacation", dates=(t0, t1))
-    r.plot_cat_bd("nonessential", dates=(t0, t1))
-    r.plot_cat_bd("leisure", dates=(t0, t1))
-    r.plot_cat_bd("personal", dates=(t0, t1))
+    #r.plot_cat_bd("essential", dates=(t0, t1))
+    #r.plot_cat_bd("vacation", dates=(t0, t1))
+    #r.plot_cat_bd("nonessential", dates=(t0, t1))
+    #r.plot_cat_bd("leisure", dates=(t0, t1))
+    #r.plot_cat_bd("personal", dates=(t0, t1))
     #r.plot_cat_bd("balance", dates=(t0, t1))       # no good graph, caution
-    r.plot_cat_bd("income", dates=(t0, t1))
+    #r.plot_cat_bd("income", dates=(t0, t1))
     plt.show()
 
 def main():

@@ -63,7 +63,7 @@ def assign_tags(row, d):
     for k, v in d.items():
         if re.search(k, row["description"], re.IGNORECASE):
             return pd.Series([v], index=["tag"])
-    return pd.Series(index=["tag"])
+    return pd.Series(index=["tag"], dtype='object')
 
 def load_json(fpath):
     """Load json dictionary from file path location
