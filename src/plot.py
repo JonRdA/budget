@@ -61,7 +61,7 @@ def bar(srs, ax=None, days=30):
 
     # Correction for timeline report. Bar at beginning of freq & set width.
     if srs.index.inferred_type=="datetime64":
-        x = x - datetime.timedelta(days)
+        x = x #- datetime.timedelta(days)
         w *= days
     if (srs <= 0).all():
         ax.invert_yaxis()
@@ -79,7 +79,7 @@ def sbar(df, ax=None,  days=30):
         days (int): report resampling frequency in days for bar width.
     """
     df = df.fillna(0)
-    x = df.index - datetime.timedelta(days)
+    x = df.index #+ datetime.timedelta(days)
     w = .8 * days
     h0 = np.zeros(len(x))
 

@@ -21,7 +21,7 @@ class Report():
             gdb (pd.DataFrame): grouped database of subs, resampled at freq.
         """
 
-    def __init__(self, database, freq="M", cat_file = CATS):
+    def __init__(self, database, freq="MS", cat_file = CATS):
         """Instanciate report object loading database.
 
         Args:
