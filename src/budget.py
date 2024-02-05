@@ -95,17 +95,17 @@ def test():
     print(df.sum().sum())
     #plot.gbar(df)
 
-#    r.plot_cat_bd("food", dates=(t0, t1))
-#    r.plot_cat_bd("funds", dates=(t0, t1))
-#    r.plot_cat_bd("buy", dates=(t0, t1))
-#    r.plot_cat_bd("car", dates=(t0, t1))
-#    r.plot_cat_bd("expenses", dates=(t0, t1))
-#    r.plot_cat_bd("essential", dates=(t0, t1))
-#    r.plot_cat_bd("vacation", dates=(t0, t1))
-#    r.plot_cat_bd("nonessential", dates=(t0, t1))
-#    r.plot_cat_bd("leisure", dates=(t0, t1))
-#    r.plot_cat_bd("personal", dates=(t0, t1))
-#    r.plot_cat_bd("balance", dates=(t0, t1))       # no good graph, caution
+    r.plot_cat_bd("food", dates=(t0, t1))
+    r.plot_cat_bd("funds", dates=(t0, t1))
+    r.plot_cat_bd("buy", dates=(t0, t1))
+    r.plot_cat_bd("car", dates=(t0, t1))
+    r.plot_cat_bd("expenses", dates=(t0, t1))
+    r.plot_cat_bd("essential", dates=(t0, t1))
+    r.plot_cat_bd("vacation", dates=(t0, t1))
+    r.plot_cat_bd("nonessential", dates=(t0, t1))
+    r.plot_cat_bd("leisure", dates=(t0, t1))
+    r.plot_cat_bd("personal", dates=(t0, t1))
+    r.plot_cat_bd("balance", dates=(t0, t1))       # no good graph, caution
     r.plot_cat_bd("income", dates=(t0, t1))
     plt.show()
 
